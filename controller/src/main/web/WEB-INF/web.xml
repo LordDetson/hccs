@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
+         version="4.0">
+    <resource-ref>
+        <description>DB Connection</description>
+        <res-ref-name>jdbc/hccs</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <res-auth>Container</res-auth>
+    </resource-ref>
+
+    <login-config>
+        <auth-method>FORM</auth-method>
+        <form-login-config>
+            <form-login-page>/login.jsp</form-login-page>
+        </form-login-config>
+    </login-config>
+    <security-constraint>
+        <!--<web-resource-collection>
+            <web-resource-name>rooms</web-resource-name>
+            <url-pattern>/room/*</url-pattern>
+        </web-resource-collection>-->
+        <auth-constraint>
+            <role-name>administrator</role-name>
+            <role-name>user</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>NONE</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+    <security-role>
+        <role-name>administrator</role-name>
+        <role-name>user</role-name>
+    </security-role>
+
+    <listener>
+        <listener-class>by.mitso.berezkina.listener.HibernateSessionFactoryListener</listener-class>
+    </listener>
+</web-app>

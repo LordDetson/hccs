@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>by.mitso.berezkina</groupId>
+    <artifactId>hccs</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0</version>
+    <name>Hotel customer control system</name>
+
+    <modules>
+        <module>domain</module>
+        <module>application</module>
+        <module>controller</module>
+    </modules>
+
+    <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <junit.varsion>5.8.1</junit.varsion>
+        <surefire.plugin.varsion>2.22.2</surefire.plugin.varsion>
+        <failsafe.plugin.varsion>2.22.2</failsafe.plugin.varsion>
+        <servlet.version>5.0.0</servlet.version>
+        <jstl.varsion>2.0.0</jstl.varsion>
+        <persistence.api.varsion>2.2</persistence.api.varsion>
+        <javamoney.manetory.varsion>1.4.2</javamoney.manetory.varsion>
+        <hibernate.varsion>5.6.1.Final</hibernate.varsion>
+        <mysql.connector.version>8.0.27</mysql.connector.version>
+        <h2database.version>1.4.200</h2database.version>
+        <apache.commons.lang.version>3.12.0</apache.commons.lang.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${junit.varsion}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${apache.commons.lang.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${surefire.plugin.varsion}</version>
+            </plugin>
+            <plugin>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>${failsafe.plugin.varsion}</version>
+            </plugin>
+        </plugins>
+    </build>
+</project>
