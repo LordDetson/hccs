@@ -13,6 +13,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="${pageContext.request.contextPath}/room/type/add">Создать тип комнаты</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="${pageContext.request.contextPath}/rooms/types">Типы комнат</a>
+                    </li>
                     <%--<li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="#">Home</a>
                     </li>

@@ -19,4 +19,15 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
+
+    <tag>
+        <name>table</name>
+        <tag-class>by.mitso.berezkina.tag.TableTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>tableModel</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
 </taglib>
