@@ -24,6 +24,7 @@
         <failsafe.plugin.varsion>2.22.2</failsafe.plugin.varsion>
         <servlet.version>5.0.0</servlet.version>
         <jstl.varsion>2.0.0</jstl.varsion>
+        <jakarta.servlet.jsp-api.version>3.0.0</jakarta.servlet.jsp-api.version>
         <persistence.api.varsion>2.2</persistence.api.varsion>
         <javamoney.manetory.varsion>1.4.2</javamoney.manetory.varsion>
         <hibernate.varsion>5.6.1.Final</hibernate.varsion>

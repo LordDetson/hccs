@@ -2,9 +2,6 @@ package by.mitso.berezkina.factor;
 
 import java.util.Map;
 
-import javax.persistence.EntityManagerFactory;
-
-import by.mitso.berezkina.application.CustomerRegister;
 import by.mitso.berezkina.domain.Field;
 import by.mitso.berezkina.domain.RoomType;
 import by.mitso.berezkina.domain.RoomType.RoomTypeField;

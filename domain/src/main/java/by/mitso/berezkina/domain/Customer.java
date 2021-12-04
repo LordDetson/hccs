@@ -46,36 +46,39 @@ public class Customer extends Persistent<Long> {
     private Set<RoomAssignment> assignments;
 
     public enum CustomerField implements Field {
-        FIRST_NAME("firstName", "имя", String.class, Customer::getFirstName,
+        FIRST_NAME("firstName", "имя", String.class, true, Customer::getFirstName,
                 (customer, value) -> customer.setFirstName((String) value)),
-        LAST_NAME("lastName", "фамилия", String.class, Customer::getLastName,
+        LAST_NAME("lastName", "фамилия", String.class, true, Customer::getLastName,
                 (customer, value) -> customer.setLastName((String) value)),
-        PASSPORT_ID("passportId", "номер паспорта", String.class, Customer::getPassportId,
+        PASSPORT_ID("passportId", "номер паспорта", String.class, true, Customer::getPassportId,
                 (customer, value) -> customer.setPassportId((String) value)),
-        IDENTIFIER_NUMBER("identifierNumber", "идентификационный номер", String.class, Customer::getIdentifierNumber,
+        IDENTIFIER_NUMBER("identifierNumber", "идентификационный номер", String.class, true, Customer::getIdentifierNumber,
                 (customer, value) -> customer.setIdentifierNumber((String) value)),
-        COUNTRY("country", "страна", String.class, Customer::getCountry,
+        COUNTRY("country", "страна", String.class, true, Customer::getCountry,
                 (customer, value) -> customer.setCountry((String) value)),
-        NATIONALITY("nationality", "национальность", String.class, Customer::getNationality,
+        NATIONALITY("nationality", "национальность", String.class, true, Customer::getNationality,
                 (customer, value) -> customer.setNationality((String) value)),
-        BIRTHDAY("birthday", "дата рождения", LocalDate.class, Customer::getBirthday,
+        BIRTHDAY("birthday", "дата рождения", LocalDate.class, true, Customer::getBirthday,
                 (customer, value) -> customer.setBirthday((LocalDate) value)),
-        GENDER("gender", "пол", Gender.class, Customer::getGender,
+        GENDER("gender", "пол", Gender.class, true, Customer::getGender,
                 (customer, value) -> customer.setGender((Gender) value)),
-        assignments("assignments", "назначеные комнаты", Set.class, Customer::getAssignments,
+        assignments("assignments", "назначеные комнаты", Set.class, false, Customer::getAssignments,
                 (customer, value) -> customer.setAssignments((Set<RoomAssignment>) value))
         ;
 
         private final String name;
         private final String caption;
         private final Class<?> type;
+        private final boolean required;
         private final Function<Customer, ?> getter;
         private final BiConsumer<Customer, Object> setter;
 
-        CustomerField(String name, String caption, Class<?> type, Function<Customer, ?> getter, BiConsumer<Customer, Object> setter) {
+        CustomerField(String name, String caption, Class<?> type, boolean required, Function<Customer, ?> getter,
+                BiConsumer<Customer, Object> setter) {
             this.name = name;
             this.caption = caption;
             this.type = type;
+            this.required = required;
             this.getter = getter;
             this.setter = setter;
         }
@@ -93,6 +96,11 @@ public class Customer extends Persistent<Long> {
         @Override
         public Class<?> getType() {
             return type;
+        }
+
+        @Override
+        public boolean isRequired() {
+            return required;
         }
 
         @Override

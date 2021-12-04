@@ -53,29 +53,31 @@ public class Tariff extends Persistent<Long> implements MonetaryAmount {
     private MonetaryAmount monetaryAmount;
 
     public enum TariffField implements Field {
-        AMOUNT("amount", "стоимость", Number.class, Tariff::getNumber,
+        AMOUNT("amount", "стоимость", Number.class, true, Tariff::getNumber,
                 (tariff, value) -> tariff.setAmount((Double) value)),
-        CURRENCY_CODE("currencyCode", "валюта", String.class, Tariff::getCurrencyCode,
+        CURRENCY_CODE("currencyCode", "валюта", String.class, true, Tariff::getCurrencyCode,
                 (tariff, value) -> tariff.setCurrencyCode((String) value)),
-        DESCRIPTION("description", "описание", String.class, Tariff::getDescription,
+        DESCRIPTION("description", "описание", String.class, false, Tariff::getDescription,
                 (tariff, value) -> tariff.setDescription((String) value)),
-        ROOM("room", "комната", Room.class, Tariff::getRoom,
+        ROOM("room", "комната", Room.class, true, Tariff::getRoom,
                 null),
-        ASSIGNMENTS("assignments", "история назначений", Set.class, Tariff::getAssignments,
+        ASSIGNMENTS("assignments", "история назначений", Set.class, false, Tariff::getAssignments,
                 null),
         ;
         
         private final String name;
         private final String caption;
         private final Class<?> type;
+        private final boolean required;
         private final Function<Tariff, ?> getter;
         private final BiConsumer<Tariff, Object> setter;
 
-        TariffField(String name, String caption, Class<?> type, Function<Tariff, ?> getter,
+        TariffField(String name, String caption, Class<?> type, boolean required, Function<Tariff, ?> getter,
                 BiConsumer<Tariff, Object> setter) {
             this.name = name;
             this.caption = caption;
             this.type = type;
+            this.required = required;
             this.getter = getter;
             this.setter = setter;
         }
@@ -93,6 +95,11 @@ public class Tariff extends Persistent<Long> implements MonetaryAmount {
         @Override
         public Class<?> getType() {
             return type;
+        }
+
+        @Override
+        public boolean isRequired() {
+            return required;
         }
 
         @Override
