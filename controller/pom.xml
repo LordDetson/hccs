@@ -39,5 +39,11 @@
             <artifactId>jakarta.servlet.jsp.jstl</artifactId>
             <version>${jstl.varsion}</version>
         </dependency>
+        <dependency>
+            <groupId>jakarta.servlet.jsp</groupId>
+            <artifactId>jakarta.servlet.jsp-api</artifactId>
+            <version>${jakarta.servlet.jsp-api.version}</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 </project>

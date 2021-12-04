@@ -50,27 +50,29 @@ public class Payment extends Persistent<Long> implements MonetaryAmount {
     private MonetaryAmount monetaryAmount;
 
     public enum PaymentField implements Field {
-        AMOUNT("amount", "сумма", Number.class, Payment::getNumber,
+        AMOUNT("amount", "сумма", Number.class, true, Payment::getNumber,
                 (tariff, value) -> tariff.setAmount((Double) value)),
-        CURRENCY_CODE("currencyCode", "валюта", String.class, Payment::getCurrencyCode,
+        CURRENCY_CODE("currencyCode", "валюта", String.class, true, Payment::getCurrencyCode,
                 (tariff, value) -> tariff.setCurrencyCode((String) value)),
-        DATE_TIME("dateTime", "дата и время", LocalDateTime.class, Payment::getDateTime,
+        DATE_TIME("dateTime", "дата и время", LocalDateTime.class, true, Payment::getDateTime,
                 null),
-        ASSIGNMENT("assignment", "назначен", RoomAssignment.class, Payment::getAssignment,
+        ASSIGNMENT("assignment", "назначен", RoomAssignment.class, false, Payment::getAssignment,
                 null),
         ;
 
         private final String name;
         private final String caption;
         private final Class<?> type;
+        private final boolean required;
         private final Function<Payment, ?> getter;
         private final BiConsumer<Payment, Object> setter;
 
-        PaymentField(String name, String caption, Class<?> type, Function<Payment, ?> getter,
+        PaymentField(String name, String caption, Class<?> type, boolean required, Function<Payment, ?> getter,
                 BiConsumer<Payment, Object> setter) {
             this.name = name;
             this.caption = caption;
             this.type = type;
+            this.required = required;
             this.getter = getter;
             this.setter = setter;
         }
@@ -88,6 +90,11 @@ public class Payment extends Persistent<Long> implements MonetaryAmount {
         @Override
         public Class<?> getType() {
             return type;
+        }
+
+        @Override
+        public boolean isRequired() {
+            return required;
         }
 
         @Override

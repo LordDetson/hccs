@@ -8,6 +8,8 @@ public interface Field {
 
     Class<?> getType();
 
+    boolean isRequired();
+
     Object getValue(Object component);
 
     void setValue(Object component, Object value);

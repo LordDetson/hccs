@@ -37,4 +37,11 @@
     <listener>
         <listener-class>by.mitso.berezkina.listener.HibernateSessionFactoryListener</listener-class>
     </listener>
+
+    <jsp-config>
+        <taglib>
+            <taglib-uri>http://berezkina.mitso.by/custom-taglib</taglib-uri>
+            <taglib-location>/WEB-INF/custom-taglib.tld</taglib-location>
+        </taglib>
+    </jsp-config>
 </web-app>

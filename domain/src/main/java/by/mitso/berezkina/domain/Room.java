@@ -47,36 +47,38 @@ public class Room extends Persistent<Integer> {
     private Set<RoomAssignment> assignments;
 
     public enum RoomField implements Field {
-        ID("id", "ID", Integer.class, Room::getId,
+        ID("id", "ID", Integer.class, false, Room::getId,
                 (room, value) -> room.setId((Integer) value)),
-        NUMBER("number", "номер комнаты", String.class, Room::getNumber,
+        NUMBER("number", "номер комнаты", String.class, true, Room::getNumber,
                 (room, value) -> room.setNumber((String) value)),
-        ROOM_TYPE("roomType", "тип комнаты", RoomType.class, Room::getRoomType,
+        ROOM_TYPE("roomType", "тип комнаты", RoomType.class, true, Room::getRoomType,
                 (room, value) -> room.setRoomType((RoomType) value)),
-        DESCRIPTION("description", "дополнительное описание", String.class, Room::getDescription,
+        DESCRIPTION("description", "дополнительное описание", String.class, false, Room::getDescription,
                 (room, value) -> room.setDescription((String) value)),
-        MIN_PEOPLE("minPeople", "минимальное количество людей", Byte.class, Room::getMinPeople,
+        MIN_PEOPLE("minPeople", "минимальное количество людей", Byte.class, false, Room::getMinPeople,
                 (room, value) -> room.setMinPeople((Byte) value)),
-        MAX_PEOPLE("maxPeople", "максимальное количество людей", Byte.class, Room::getMaxPeople,
+        MAX_PEOPLE("maxPeople", "максимальное количество людей", Byte.class, false, Room::getMaxPeople,
                 (room, value) -> room.setMaxPeople((Byte) value)),
-        NUMBER_OF_BEDS("numberOfBeds", "количество краватей", Byte.class, Room::getNumberOfBeds,
+        NUMBER_OF_BEDS("numberOfBeds", "количество краватей", Byte.class, false, Room::getNumberOfBeds,
                 (room, value) -> room.setNumberOfBeds((Byte) value)),
-        TARIFFS("tariffs", "тарифы", Set.class, Room::getTariffs,
+        TARIFFS("tariffs", "тарифы", Set.class, false, Room::getTariffs,
                 (room, value) -> room.setTariffs((Set<Tariff>) value)),
-        assignments("assignments", "история назначений", Set.class, Room::getAssignments,
+        assignments("assignments", "история назначений", Set.class, false, Room::getAssignments,
                 null),
         ;
 
         private final String name;
         private final String caption;
         private final Class<?> type;
+        private final boolean required;
         private final Function<Room, ?> getter;
         private final BiConsumer<Room, Object> setter;
 
-        RoomField(String name, String caption, Class<?> type, Function<Room, ?> getter, BiConsumer<Room, Object> setter) {
+        RoomField(String name, String caption, Class<?> type, boolean required, Function<Room, ?> getter, BiConsumer<Room, Object> setter) {
             this.name = name;
             this.caption = caption;
             this.type = type;
+            this.required = required;
             this.getter = getter;
             this.setter = setter;
         }
@@ -94,6 +96,11 @@ public class Room extends Persistent<Integer> {
         @Override
         public Class<?> getType() {
             return type;
+        }
+
+        @Override
+        public boolean isRequired() {
+            return required;
         }
 
         @Override

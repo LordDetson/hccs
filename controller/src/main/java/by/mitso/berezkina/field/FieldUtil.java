@@ -4,39 +4,30 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
-
+import by.mitso.berezkina.converter.Converter;
+import by.mitso.berezkina.converter.FieldConverter;
 import by.mitso.berezkina.domain.Field;
 import by.mitso.berezkina.domain.RoomType.RoomTypeField;
 import jakarta.servlet.http.HttpServletRequest;
 
 public class FieldUtil {
 
-    public static List<FormField> convertToFormFields(Collection<? extends Field> fields) {
+    private static final Converter<Field, InputField> FIELD_CONVERTER = new FieldConverter();
+
+    public static Set<InputField> convertToFormFields(Collection<? extends Field> fields) {
         return fields.stream()
-                .map(FieldUtil::convertToFromField)
-                .collect(Collectors.toList());
+                .map(FieldUtil::convertToFormField)
+                .collect(LinkedHashSet::new, Collection::add, Collection::addAll);
     }
 
-    public static FormField convertToFromField(Field field) {
-        Class<?> type = field.getType();
-        String formType;
-        if(Number.class.isAssignableFrom(type)) {
-            formType = "number";
-        }
-        else {
-            formType = "text";
-        }
-        String caption = StringUtils.capitalize(field.getCaption());
-        return new FormField(field.getName(), caption, formType);
+    public static InputField convertToFormField(Field field) {
+        return FIELD_CONVERTER.convert(field);
     }
 
-    public static List<FormField> getRoomTypeOrderedFormFields() {
+    public static Set<InputField> getRoomTypeOrderedFormFields() {
         Set<RoomTypeField> formFields = new LinkedHashSet<>();
         formFields.add(RoomTypeField.NAME);
         formFields.add(RoomTypeField.DESCRIPTION);

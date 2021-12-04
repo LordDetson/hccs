@@ -44,33 +44,35 @@ public class RoomAssignment extends Persistent<Long> {
     private RoomAssignmentStatus status;
 
     public enum RoomAssignmentField implements Field {
-        OWNER("owner", "владелец", Customer.class, RoomAssignment::getOwner,
+        OWNER("owner", "владелец", Customer.class, true, RoomAssignment::getOwner,
                 null),
-        ADDITIONAL_PERSONS("additionalPersons", "дополнительные жильцы", Integer.class, RoomAssignment::getAdditionalPersons,
+        ADDITIONAL_PERSONS("additionalPersons", "дополнительные жильцы", Integer.class, false, RoomAssignment::getAdditionalPersons,
                 null),
-        ROOMS("room", "назначенная комната", Room.class, RoomAssignment::getRoom,
+        ROOMS("room", "назначенная комната", Room.class, true, RoomAssignment::getRoom,
                 null),
-        TARIFF("tariff", "тариф", Tariff.class, RoomAssignment::getTariff,
+        TARIFF("tariff", "тариф", Tariff.class, true, RoomAssignment::getTariff,
                 null),
-        COMPLETE_DATE_TIME("completeDateTime", "дата и время завершения", LocalDateTime.class, RoomAssignment::getCompleteDateTime,
+        COMPLETE_DATE_TIME("completeDateTime", "дата и время завершения", LocalDateTime.class, true, RoomAssignment::getCompleteDateTime,
                 null),
-        PAYMENT("payment", "сумма оплаты", Payment.class, RoomAssignment::getPayment,
+        PAYMENT("payment", "сумма оплаты", Payment.class, true, RoomAssignment::getPayment,
                 (assignment, value) -> assignment.setPayment((Payment) value)),
-        STATUS("status", "статус", RoomAssignmentStatus.class, RoomAssignment::getStatus,
+        STATUS("status", "статус", RoomAssignmentStatus.class, false, RoomAssignment::getStatus,
                 (assignment, value) -> assignment.setStatus((RoomAssignmentStatus) value)),
         ;
 
         private final String name;
         private final String caption;
         private final Class<?> type;
+        private final boolean required;
         private final Function<RoomAssignment, ?> getter;
         private final BiConsumer<RoomAssignment, Object> setter;
 
-        RoomAssignmentField(String name, String caption, Class<?> type, Function<RoomAssignment, ?> getter,
+        RoomAssignmentField(String name, String caption, Class<?> type, boolean required, Function<RoomAssignment, ?> getter,
                 BiConsumer<RoomAssignment, Object> setter) {
             this.name = name;
             this.caption = caption;
             this.type = type;
+            this.required = required;
             this.getter = getter;
             this.setter = setter;
         }
@@ -91,6 +93,11 @@ public class RoomAssignment extends Persistent<Long> {
         }
 
         @Override
+        public boolean isRequired() {
+            return required;
+        }
+
+        @Override
         public Object getValue(Object component) {
             return getter.apply((RoomAssignment) component);
         }
@@ -108,9 +115,8 @@ public class RoomAssignment extends Persistent<Long> {
         // for ORM
     }
 
-    public RoomAssignment(Customer owner, Integer additionalPersons, Room room, Tariff tariff, LocalDateTime completeDateTime) {
+    public RoomAssignment(Customer owner, Room room, Tariff tariff, LocalDateTime completeDateTime) {
         this.owner = owner;
-        this.additionalPersons = additionalPersons;
         this.room = room;
         this.tariff = tariff;
         this.completeDateTime = completeDateTime;

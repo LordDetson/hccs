@@ -41,35 +41,37 @@ public class RoomType extends Persistent<Integer> {
     private Set<Room> rooms;
 
     public enum RoomTypeField implements Field {
-        ID("id", "ID", Integer.class, RoomType::getId,
+        ID("id", "ID", Integer.class, false, RoomType::getId,
                 (roomType, value) -> roomType.setId((Integer) value)),
-        NAME("name", "название", String.class, RoomType::getName,
+        NAME("name", "название", String.class, true, RoomType::getName,
                 (roomType, value) -> roomType.setName((String) value)),
-        DESCRIPTION("description", "описание", String.class, RoomType::getDescription,
+        DESCRIPTION("description", "описание", String.class, false, RoomType::getDescription,
                 (roomType, value) -> roomType.setDescription((String) value)),
-        MIN_PEOPLE("minPeople", "минимальное предпочтительное количество людей", Byte.class, RoomType::getMinPeople,
+        MIN_PEOPLE("minPeople", "минимальное предпочтительное количество людей", Byte.class, true, RoomType::getMinPeople,
                 (roomType, value) -> roomType.setMinPeople((Byte) value)),
-        MAX_PEOPLE("maxPeople", "максимальное предпочтительное количество людей", Byte.class, RoomType::getMaxPeople,
+        MAX_PEOPLE("maxPeople", "максимальное предпочтительное количество людей", Byte.class, true, RoomType::getMaxPeople,
                 (roomType, value) -> roomType.setMaxPeople((Byte) value)),
-        MIN_BEDS("minBeds", "минимальное предпочтительное количество краватей", Byte.class, RoomType::getMinBeds,
+        MIN_BEDS("minBeds", "минимальное предпочтительное количество краватей", Byte.class, true, RoomType::getMinBeds,
                 (roomType, value) -> roomType.setMinBeds((Byte) value)),
-        MAX_BEDS("maxBeds", "максимальное предпочтительное количество краватей", Byte.class, RoomType::getMaxBeds,
+        MAX_BEDS("maxBeds", "максимальное предпочтительное количество краватей", Byte.class, true, RoomType::getMaxBeds,
                 (roomType, value) -> roomType.setMaxBeds((Byte) value)),
-        ROOMS("rooms", "комнаты", Set.class, RoomType::getRooms,
+        ROOMS("rooms", "комнаты", Set.class, false, RoomType::getRooms,
                 (roomType, value) -> roomType.setRooms((Set<Room>) value))
         ;
 
         private final String name;
         private final String caption;
         private final Class<?> type;
+        private final boolean required;
         private final Function<RoomType, ?> getter;
         private final BiConsumer<RoomType, Object> setter;
 
-        RoomTypeField(String name, String caption, Class<?> type, Function<RoomType, ?> getter,
+        RoomTypeField(String name, String caption, Class<?> type, boolean required, Function<RoomType, ?> getter,
                 BiConsumer<RoomType, Object> setter) {
             this.name = name;
             this.caption = caption;
             this.type = type;
+            this.required = required;
             this.getter = getter;
             this.setter = setter;
         }
@@ -87,6 +89,11 @@ public class RoomType extends Persistent<Integer> {
         @Override
         public Class<?> getType() {
             return type;
+        }
+
+        @Override
+        public boolean isRequired() {
+            return required;
         }
 
         @Override
