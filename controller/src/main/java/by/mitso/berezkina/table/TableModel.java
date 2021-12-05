@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
-import by.mitso.berezkina.domain.Field;
 import by.mitso.berezkina.domain.Persistent;
 
 public abstract class TableModel<T extends Persistent<?>> extends AbstractTableModel {
@@ -13,12 +12,12 @@ public abstract class TableModel<T extends Persistent<?>> extends AbstractTableM
     private final List<T> elements;
     private ColumnList columnList;
 
-    private final String editAction;
+    private String editAction;
+    private String deleteAction;
 
-    protected TableModel(String title, List<T> elements, String editAction) {
+    protected TableModel(String title, List<T> elements) {
         this.title = title;
         this.elements = elements;
-        this.editAction = editAction;
     }
 
     public String getTitle() {
@@ -51,7 +50,7 @@ public abstract class TableModel<T extends Persistent<?>> extends AbstractTableM
 
     public final ColumnList getColumnList() {
         if (columnList == null) {
-            columnList = createColumnPropertyList();
+            columnList = createColumnList();
             if (columnList == null) {
                 // so no additional null checks needed
                 columnList = new ColumnList();
@@ -62,9 +61,21 @@ public abstract class TableModel<T extends Persistent<?>> extends AbstractTableM
         return columnList;
     }
 
-    protected abstract ColumnList createColumnPropertyList();
+    protected abstract ColumnList createColumnList();
 
     public String getEditAction() {
         return editAction;
+    }
+
+    public void setEditAction(String editAction) {
+        this.editAction = editAction;
+    }
+
+    public String getDeleteAction() {
+        return deleteAction;
+    }
+
+    public void setDeleteAction(String deleteAction) {
+        this.deleteAction = deleteAction;
     }
 }

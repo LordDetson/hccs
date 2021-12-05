@@ -28,12 +28,13 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet(name = "RoomController", urlPatterns = { "/rooms/types", "/room/type/add", "/room/type/edit" })
+@WebServlet(name = "RoomController", urlPatterns = { "/rooms/types", "/room/type/add", "/room/type/edit", "/room/type/delete" })
 public class RoomController extends HttpServlet {
 
     private static final String ADD_ROOM_TYPE = "/room/type/add";
     private static final String GET_ROOM_TYPES = "/rooms/types";
     private static final String EDIT_ROOM_TYPE = "/room/type/edit";
+    private static final String DELETE_ROOM_TYPE = "/room/type/delete";
     private static final String STANDARD_FORM_VIEW = "/template/standardForm.jsp";
     private static final String STANDARD_TABLE_VIEW = "/template/standardTable.jsp";
 
@@ -84,6 +85,11 @@ public class RoomController extends HttpServlet {
                 forwardStandardForm(req, resp);
             }
         }
+        else if(isAction(req, DELETE_ROOM_TYPE)) {
+            Integer id = Integer.valueOf(req.getParameter(RoomTypeField.ID.getName()));
+            roomTypeRepository.deleteById(id);
+            resp.sendRedirect(GET_ROOM_TYPES);
+        }
     }
 
     @Override
@@ -129,10 +135,10 @@ public class RoomController extends HttpServlet {
         while(iterator.hasNext()) {
             roomTypes.add(iterator.next());
         }
-        return new TableModel<>(title, roomTypes, EDIT_ROOM_TYPE) {
+        TableModel<RoomType> tableModel = new TableModel<>(title, roomTypes) {
 
             @Override
-            protected ColumnList createColumnPropertyList() {
+            protected ColumnList createColumnList() {
                 ColumnList list = new ColumnList();
                 list.add(RoomTypeField.ID).setCaption("#");
                 list.add(RoomTypeField.NAME);
@@ -140,10 +146,13 @@ public class RoomController extends HttpServlet {
                 list.add(RoomTypeField.MIN_PEOPLE);
                 list.add(RoomTypeField.MAX_PEOPLE);
                 list.add(RoomTypeField.MIN_BEDS);
-                list.add(RoomTypeField.MAX_PEOPLE);
+                list.add(RoomTypeField.MAX_BEDS);
                 return list;
             }
         };
+        tableModel.setEditAction(EDIT_ROOM_TYPE);
+        tableModel.setDeleteAction(DELETE_ROOM_TYPE);
+        return tableModel;
     }
 
     private void forwardStandardForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

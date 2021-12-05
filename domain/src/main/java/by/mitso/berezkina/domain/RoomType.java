@@ -51,9 +51,9 @@ public class RoomType extends Persistent<Integer> {
                 (roomType, value) -> roomType.setMinPeople((Byte) value)),
         MAX_PEOPLE("maxPeople", "максимальное предпочтительное количество людей", Byte.class, true, RoomType::getMaxPeople,
                 (roomType, value) -> roomType.setMaxPeople((Byte) value)),
-        MIN_BEDS("minBeds", "минимальное предпочтительное количество краватей", Byte.class, true, RoomType::getMinBeds,
+        MIN_BEDS("minBeds", "минимальное предпочтительное количество кроватей", Byte.class, true, RoomType::getMinBeds,
                 (roomType, value) -> roomType.setMinBeds((Byte) value)),
-        MAX_BEDS("maxBeds", "максимальное предпочтительное количество краватей", Byte.class, true, RoomType::getMaxBeds,
+        MAX_BEDS("maxBeds", "максимальное предпочтительное количество кроватей", Byte.class, true, RoomType::getMaxBeds,
                 (roomType, value) -> roomType.setMaxBeds((Byte) value)),
         ROOMS("rooms", "комнаты", Set.class, false, RoomType::getRooms,
                 (roomType, value) -> roomType.setRooms((Set<Room>) value))

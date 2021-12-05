@@ -39,7 +39,8 @@ public class TableTag extends TagSupport {
                 out.println(String.format("<th scope=\"col\">%s</th>", StringUtils.capitalize(column.getCaption())));
             }
             String editAction = tableModel.getEditAction();
-            if(editAction != null && !rows.isEmpty() && rows.get(0) instanceof Persistent<?>) {
+            String deleteAction = tableModel.getDeleteAction();
+            if((editAction != null || deleteAction != null) && !rows.isEmpty() && rows.get(0) instanceof Persistent<?>) {
                 out.println("<th scope=\"col\">Действия</th>");
             }
             out.println("</tr>");
@@ -50,11 +51,18 @@ public class TableTag extends TagSupport {
                 for(Column column : columns) {
                     out.println(String.format("<td>%s</td>", tableModel.getValueAt(row, column)));
                 }
-                if(editAction != null && row instanceof Persistent<?>) {
+                if((editAction != null || deleteAction != null) && row instanceof Persistent<?>) {
                     Serializable id = ((Persistent<?>) row).getId();
                     if(id != null) {
                         out.println("<td>");
-                        out.println(String.format("<a href=\"%s?id=%s\" class=\"btn btn-primary btn-sm\">Редактировать</a>", editAction, id));
+                        out.println("<div class=\"btn-group\">");
+                        if(editAction != null) {
+                            out.println(String.format("<a href=\"%s?id=%s\" class=\"btn btn-primary btn-sm\">Редактировать</a>", editAction, id));
+                        }
+                        if(deleteAction != null) {
+                            out.println(String.format("<a href=\"%s?id=%s\" class=\"btn btn-danger btn-sm\">Удалить</a>", deleteAction, id));
+                        }
+                        out.println("</div>");
                         out.println("</td>");
                     }
                 }

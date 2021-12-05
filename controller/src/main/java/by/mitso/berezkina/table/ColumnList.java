@@ -12,15 +12,15 @@ public class ColumnList implements Iterable<Column> {
 
     private final List<Column> columns = new ArrayList<>();
 
-    public void add(Column property) {
-        assert findColumn(property) == null : "Column name already exists: " + property.getName();
-        columns.add(property);
+    public void add(Column column) {
+        assert findColumn(column) == null : "Column name already exists: " + column.getName();
+        columns.add(column);
     }
 
     public Column add(Field field) {
-        Column property = new Column(field);
-        add(property);
-        return property;
+        Column column = new Column(field);
+        add(column);
+        return column;
     }
 
     public void addAll(Field... fields) {
@@ -82,7 +82,7 @@ public class ColumnList implements Iterable<Column> {
         if(column == null) {
             return null;
         }
-        return findColumnByID(column.getName());
+        return findColumnByName(column.getName());
     }
 
     public Column findColumnByField(Field field) {
@@ -106,13 +106,13 @@ public class ColumnList implements Iterable<Column> {
         return column.getField().equals(field) || column.getName().equals(field.getName());
     }
 
-    public Column findColumnByID(String id) {
-        return findColumnByID(columns, id);
+    public Column findColumnByName(String name) {
+        return findColumnByName(columns, name);
     }
 
-    protected Column findColumnByID(List<Column> properties, String id) {
+    protected Column findColumnByName(List<Column> properties, String name) {
         for(Column prop : properties) {
-            if(prop.getName().equalsIgnoreCase(id)) {
+            if(prop.getName().equalsIgnoreCase(name)) {
                 return prop;
             }
         }
