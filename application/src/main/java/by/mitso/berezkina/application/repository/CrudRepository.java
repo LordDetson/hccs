@@ -3,6 +3,7 @@ package by.mitso.berezkina.application.repository;
 import java.io.Serializable;
 import java.util.Optional;
 
+import by.mitso.berezkina.domain.Field;
 import by.mitso.berezkina.domain.Persistent;
 
 public interface CrudRepository<T extends Persistent<ID>, ID extends Serializable> extends Repository<T, ID> {
@@ -26,6 +27,8 @@ public interface CrudRepository<T extends Persistent<ID>, ID extends Serializabl
     Iterable<T> findAllById(Iterable<ID> ids);
 
     Optional<T> findById(ID id);
+
+    Optional<T> findByField(Field field, Object value);
 
     <S extends T> S save(S entity);
 

@@ -1,6 +1,11 @@
 package by.mitso.berezkina.field;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -13,7 +18,8 @@ public class InputField {
 
     private final Field field;
     private final InputFieldType type;
-    private String value;
+    private Set<String> values;
+    private String selectedValue;
 
     public enum InputFieldType {
         TEXT("text"),
@@ -21,6 +27,7 @@ public class InputField {
         DATE("date"),
         TIME("time"),
         DATE_TIME("datetime"),
+        RADIO("radio"),
         ;
 
         private final String name;
@@ -37,7 +44,7 @@ public class InputField {
     public InputField(Field field) {
         this.field = field;
         this.type = FIELD_TYPE_CONVERTER.convert(field.getType());
-        this.value = "";
+        this.values = Collections.emptySet();
     }
 
     public String getName() {
@@ -52,12 +59,20 @@ public class InputField {
         return type;
     }
 
-    public String getValue() {
-        return value;
+    public Set<String> getValues() {
+        return values;
     }
 
-    public void setValue(String value) {
-        this.value = value;
+    public void setValues(Set<String> values) {
+        this.values = values;
+    }
+
+    public String getSelectedValue() {
+        return selectedValue;
+    }
+
+    public void setSelectedValue(String selectedValue) {
+        this.selectedValue = selectedValue;
     }
 
     public boolean isRequired() {

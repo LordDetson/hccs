@@ -8,7 +8,9 @@ import java.util.Optional;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 
+import by.mitso.berezkina.domain.Field;
 import by.mitso.berezkina.domain.Persistent;
 
 public class CrudRepositoryImpl<T extends Persistent<ID>, ID extends Serializable>
@@ -91,6 +93,15 @@ public class CrudRepositoryImpl<T extends Persistent<ID>, ID extends Serializabl
     @Override
     public Optional<T> findById(ID id) {
         return Optional.ofNullable(entityManager.find(entityType, id));
+    }
+
+    @Override
+    public Optional<T> findByField(Field field, Object value) {
+        CriteriaBuilder qb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<T> cq = qb.createQuery(entityType);
+        Root<T> root = cq.from(entityType);
+        cq.select(root).where(qb.equal(root.get(field.getName()), value));
+        return Optional.ofNullable(entityManager.createQuery(cq).getSingleResult());
     }
 
     @Override

@@ -10,6 +10,7 @@ import java.util.Set;
 import by.mitso.berezkina.converter.Converter;
 import by.mitso.berezkina.converter.FieldConverter;
 import by.mitso.berezkina.domain.Field;
+import by.mitso.berezkina.domain.Room.RoomField;
 import by.mitso.berezkina.domain.RoomType.RoomTypeField;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -35,6 +36,13 @@ public class FieldUtil {
         orderedFields.add(RoomTypeField.MAX_PEOPLE);
         orderedFields.add(RoomTypeField.MIN_BEDS);
         orderedFields.add(RoomTypeField.MAX_BEDS);
+        return FieldUtil.convertToInputFields(orderedFields);
+    }
+
+    public static Set<InputField> getRoomOrderedInputFields() {
+        Set<RoomField> orderedFields = new LinkedHashSet<>();
+        orderedFields.add(RoomField.NUMBER);
+        orderedFields.add(RoomField.DESCRIPTION);
         return FieldUtil.convertToInputFields(orderedFields);
     }
 

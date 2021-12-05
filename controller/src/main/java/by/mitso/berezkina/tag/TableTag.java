@@ -15,13 +15,13 @@ import jakarta.servlet.jsp.tagext.TagSupport;
 
 public class TableTag extends TagSupport {
 
-    private TableModel<?> tableModel;
+    private TableModel<Persistent<?>> tableModel;
 
-    public TableModel<?> getTableModel() {
+    public TableModel<Persistent<?>> getTableModel() {
         return tableModel;
     }
 
-    public void setTableModel(TableModel<?> tableModel) {
+    public void setTableModel(TableModel<Persistent<?>> tableModel) {
         this.tableModel = tableModel;
     }
 
@@ -30,8 +30,12 @@ public class TableTag extends TagSupport {
         JspWriter out = pageContext.getOut();
         try {
             List<Column> columns = tableModel.getColumnList().getColumns();
-            List<?> rows = tableModel.getElements();
+            List<Persistent<?>> rows = tableModel.getElements();
             out.println(String.format("<h3>%s</h3>", tableModel.getTitle()));
+            String createAction = tableModel.getCreateAction();
+            if(createAction != null) {
+                out.println(String.format("<a href=\"%s\" class=\"btn btn-success\">Создать</a>", createAction));
+            }
             out.println("<table class=\"table table-striped\">");
             out.println("<thead>");
             out.println("<tr>");
@@ -46,13 +50,13 @@ public class TableTag extends TagSupport {
             out.println("</tr>");
             out.println("</thead>");
             out.println("<tbody>");
-            for(Object row : rows) {
+            for(Persistent<?> row : rows) {
                 out.println("<tr>");
                 for(Column column : columns) {
                     out.println(String.format("<td>%s</td>", tableModel.getValueAt(row, column)));
                 }
-                if((editAction != null || deleteAction != null) && row instanceof Persistent<?>) {
-                    Serializable id = ((Persistent<?>) row).getId();
+                if((editAction != null || deleteAction != null)) {
+                    Serializable id = row.getId();
                     if(id != null) {
                         out.println("<td>");
                         out.println("<div class=\"btn-group\">");

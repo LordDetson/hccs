@@ -12,6 +12,7 @@ public abstract class TableModel<T extends Persistent<?>> extends AbstractTableM
     private final List<T> elements;
     private ColumnList columnList;
 
+    private String createAction;
     private String editAction;
     private String deleteAction;
 
@@ -41,10 +42,10 @@ public abstract class TableModel<T extends Persistent<?>> extends AbstractTableM
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         Column column = getColumnList().getColumn(columnIndex);
-        return column.getData(elements.get(rowIndex));
+        return getValueAt(elements.get(rowIndex), column);
     }
 
-    public Object getValueAt(Object element, Column column) {
+    public Object getValueAt(T element, Column column) {
         return column.getData(element);
     }
 
@@ -62,6 +63,14 @@ public abstract class TableModel<T extends Persistent<?>> extends AbstractTableM
     }
 
     protected abstract ColumnList createColumnList();
+
+    public String getCreateAction() {
+        return createAction;
+    }
+
+    public void setCreateAction(String createAction) {
+        this.createAction = createAction;
+    }
 
     public String getEditAction() {
         return editAction;

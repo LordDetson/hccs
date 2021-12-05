@@ -63,7 +63,7 @@ public class Room extends Persistent<Integer> {
                 (room, value) -> room.setNumberOfBeds((Byte) value)),
         TARIFFS("tariffs", "тарифы", Set.class, false, Room::getTariffs,
                 (room, value) -> room.setTariffs((Set<Tariff>) value)),
-        assignments("assignments", "история назначений", Set.class, false, Room::getAssignments,
+        ASSIGNMENTS("assignments", "история назначений", Set.class, false, Room::getAssignments,
                 null),
         ;
 

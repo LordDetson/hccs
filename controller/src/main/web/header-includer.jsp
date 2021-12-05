@@ -11,10 +11,10 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link" href="${pageContext.request.contextPath}/room/type/add">Создать тип комнаты</a>
+                        <a class="nav-link" href="${pageContext.request.contextPath}/rooms/types">Типы комнат</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="${pageContext.request.contextPath}/rooms/types">Типы комнат</a>
+                        <a class="nav-link" href="${pageContext.request.contextPath}/rooms">Комнаты</a>
                     </li>
                     <%--<li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="#">Home</a>

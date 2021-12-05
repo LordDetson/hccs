@@ -3,6 +3,7 @@ package by.mitso.berezkina.converter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Set;
 
 import by.mitso.berezkina.field.InputField.InputFieldType;
 
@@ -24,6 +25,9 @@ public class FieldTypeConverter implements Converter<Class<?>, InputFieldType>{
         }
         else if(LocalDateTime.class.isAssignableFrom(type)) {
             return InputFieldType.DATE_TIME;
+        }
+        else if(Set.class.isAssignableFrom(type)) {
+            return InputFieldType.RADIO;
         }
         throw new UnsupportedOperationException(type + "");
     }
