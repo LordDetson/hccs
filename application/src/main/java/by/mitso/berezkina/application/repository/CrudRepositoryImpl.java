@@ -96,7 +96,12 @@ public class CrudRepositoryImpl<T extends Persistent<ID>, ID extends Serializabl
     @Override
     public <S extends T> S save(S entity) {
         entityManager.getTransaction().begin();
-        entityManager.persist(entity);
+        if(entity.getId() == null) {
+            entityManager.persist(entity);
+        }
+        else {
+            entityManager.merge(entity);
+        }
         entityManager.getTransaction().commit();
         return null;
     }

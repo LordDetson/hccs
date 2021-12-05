@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 import org.hibernate.SessionFactory;
 
@@ -16,6 +18,7 @@ import by.mitso.berezkina.domain.RoomType.RoomTypeField;
 import by.mitso.berezkina.factor.Factory;
 import by.mitso.berezkina.factor.RoomTypeFactory;
 import by.mitso.berezkina.field.FieldUtil;
+import by.mitso.berezkina.field.InputField;
 import by.mitso.berezkina.form.InputForm;
 import by.mitso.berezkina.table.ColumnList;
 import by.mitso.berezkina.table.TableModel;
@@ -25,11 +28,12 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet(name = "RoomController", urlPatterns = { "/rooms/types", "/room/type/add" })
+@WebServlet(name = "RoomController", urlPatterns = { "/rooms/types", "/room/type/add", "/room/type/edit" })
 public class RoomController extends HttpServlet {
 
     private static final String ADD_ROOM_TYPE = "/room/type/add";
     private static final String GET_ROOM_TYPES = "/rooms/types";
+    private static final String EDIT_ROOM_TYPE = "/room/type/edit";
     private static final String STANDARD_FORM_VIEW = "/template/standardForm.jsp";
     private static final String STANDARD_TABLE_VIEW = "/template/standardTable.jsp";
 
@@ -49,7 +53,7 @@ public class RoomController extends HttpServlet {
                     "Форма типа комнаты",
                     "createRoomType",
                     ADD_ROOM_TYPE,
-                    FieldUtil.getRoomTypeOrderedFormFields(),
+                    FieldUtil.getRoomTypeOrderedInputFields(),
                     "Создать");
             req.setAttribute("inputForm", inputForm);
             forwardStandardForm(req, resp);
@@ -59,6 +63,27 @@ public class RoomController extends HttpServlet {
             req.setAttribute("tableModel", tableModel);
             forwardStandardTable(req, resp);
         }
+        else if(isRoomTypeEditing(req)) {
+            Integer id = Integer.valueOf(req.getParameter(RoomTypeField.ID.getName()));
+            Optional<RoomType> roomTypeToEdit = roomTypeRepository.findById(id);
+            if(roomTypeToEdit.isPresent()) {
+                Set<InputField> inputFields = FieldUtil.getRoomTypeOrderedInputFields();
+                for(InputField inputField : inputFields) {
+                    Object value = roomTypeToEdit.get().getFieldValue(inputField.getField());
+                    if(value != null) {
+                        inputField.setValue(value.toString());
+                    }
+                }
+                InputForm inputForm = new InputForm(
+                        "Форма типа комнаты",
+                        "editRoomType",
+                        EDIT_ROOM_TYPE + "?id=" + id,
+                        inputFields,
+                        "Обновить");
+                req.setAttribute("inputForm", inputForm);
+                forwardStandardForm(req, resp);
+            }
+        }
     }
 
     @Override
@@ -67,6 +92,17 @@ public class RoomController extends HttpServlet {
             Map<Field, Object> fieldValueMap = FieldUtil.createFieldValueMap(RoomType.getAllFields(), req);
             RoomType roomType = roomTypeFactory.factor(fieldValueMap);
             roomTypeRepository.save(roomType);
+            resp.sendRedirect(GET_ROOM_TYPES);
+        }
+        else if(isRoomTypeEditing(req)) {
+            Integer id = Integer.valueOf(req.getParameter(RoomTypeField.ID.getName()));
+            if(roomTypeRepository.existsById(id)) {
+                Map<Field, Object> fieldValueMap = FieldUtil.createFieldValueMap(RoomType.getAllFields(), req);
+                RoomType roomType = roomTypeFactory.factor(fieldValueMap);
+                roomType.setId(id);
+                roomTypeRepository.save(roomType);
+                resp.sendRedirect(GET_ROOM_TYPES);
+            }
         }
     }
 
@@ -76,6 +112,10 @@ public class RoomController extends HttpServlet {
 
     private boolean isRoomTypeShow(HttpServletRequest req) {
         return isAction(req, GET_ROOM_TYPES);
+    }
+
+    private boolean isRoomTypeEditing(HttpServletRequest req) {
+        return isAction(req, EDIT_ROOM_TYPE);
     }
 
     private boolean isAction(HttpServletRequest req, String action) {
@@ -89,12 +129,12 @@ public class RoomController extends HttpServlet {
         while(iterator.hasNext()) {
             roomTypes.add(iterator.next());
         }
-        return new TableModel<>(title, roomTypes) {
+        return new TableModel<>(title, roomTypes, EDIT_ROOM_TYPE) {
 
             @Override
             protected ColumnList createColumnPropertyList() {
                 ColumnList list = new ColumnList();
-                list.add(RoomTypeField.ID);
+                list.add(RoomTypeField.ID).setCaption("#");
                 list.add(RoomTypeField.NAME);
                 list.add(RoomTypeField.DESCRIPTION);
                 list.add(RoomTypeField.MIN_PEOPLE);

@@ -1,0 +1,30 @@
+package by.mitso.berezkina.converter;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+
+import by.mitso.berezkina.field.InputField.InputFieldType;
+
+public class FieldTypeConverter implements Converter<Class<?>, InputFieldType>{
+
+    @Override
+    public InputFieldType convert(Class<?> type) {
+        if(Number.class.isAssignableFrom(type)) {
+            return InputFieldType.NUMBER;
+        }
+        else if(String.class.isAssignableFrom(type)) {
+            return InputFieldType.TEXT;
+        }
+        else if(LocalDate.class.isAssignableFrom(type)) {
+            return InputFieldType.DATE;
+        }
+        else if(LocalTime.class.isAssignableFrom(type)) {
+            return InputFieldType.TIME;
+        }
+        else if(LocalDateTime.class.isAssignableFrom(type)) {
+            return InputFieldType.DATE_TIME;
+        }
+        throw new UnsupportedOperationException(type + "");
+    }
+}

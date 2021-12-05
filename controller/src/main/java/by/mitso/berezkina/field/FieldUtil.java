@@ -17,25 +17,25 @@ public class FieldUtil {
 
     private static final Converter<Field, InputField> FIELD_CONVERTER = new FieldConverter();
 
-    public static Set<InputField> convertToFormFields(Collection<? extends Field> fields) {
+    public static Set<InputField> convertToInputFields(Collection<? extends Field> fields) {
         return fields.stream()
-                .map(FieldUtil::convertToFormField)
+                .map(FieldUtil::convertToInputField)
                 .collect(LinkedHashSet::new, Collection::add, Collection::addAll);
     }
 
-    public static InputField convertToFormField(Field field) {
+    public static InputField convertToInputField(Field field) {
         return FIELD_CONVERTER.convert(field);
     }
 
-    public static Set<InputField> getRoomTypeOrderedFormFields() {
-        Set<RoomTypeField> formFields = new LinkedHashSet<>();
-        formFields.add(RoomTypeField.NAME);
-        formFields.add(RoomTypeField.DESCRIPTION);
-        formFields.add(RoomTypeField.MIN_PEOPLE);
-        formFields.add(RoomTypeField.MAX_PEOPLE);
-        formFields.add(RoomTypeField.MIN_BEDS);
-        formFields.add(RoomTypeField.MAX_BEDS);
-        return FieldUtil.convertToFormFields(formFields);
+    public static Set<InputField> getRoomTypeOrderedInputFields() {
+        Set<RoomTypeField> orderedFields = new LinkedHashSet<>();
+        orderedFields.add(RoomTypeField.NAME);
+        orderedFields.add(RoomTypeField.DESCRIPTION);
+        orderedFields.add(RoomTypeField.MIN_PEOPLE);
+        orderedFields.add(RoomTypeField.MAX_PEOPLE);
+        orderedFields.add(RoomTypeField.MIN_BEDS);
+        orderedFields.add(RoomTypeField.MAX_BEDS);
+        return FieldUtil.convertToInputFields(orderedFields);
     }
 
     public static Map<Field, Object> createFieldValueMap(Set<? extends Field> fields, HttpServletRequest req) {
@@ -53,7 +53,10 @@ public class FieldUtil {
     private static Object mapStringToCorrectType(Field field, String value) {
         Class<?> type = field.getType();
         if(type.isAssignableFrom(Byte.class)) {
-            return Byte.parseByte(value);
+            return Byte.valueOf(value);
+        }
+        else if(type.isAssignableFrom(Integer.class)) {
+            return Integer.valueOf(value);
         }
         return value;
     }

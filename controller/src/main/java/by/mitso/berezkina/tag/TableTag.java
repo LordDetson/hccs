@@ -1,10 +1,12 @@
 package by.mitso.berezkina.tag;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
+import by.mitso.berezkina.domain.Persistent;
 import by.mitso.berezkina.table.Column;
 import by.mitso.berezkina.table.TableModel;
 import jakarta.servlet.jsp.JspException;
@@ -29,11 +31,16 @@ public class TableTag extends TagSupport {
         try {
             List<Column> columns = tableModel.getColumnList().getColumns();
             List<?> rows = tableModel.getElements();
+            out.println(String.format("<h3>%s</h3>", tableModel.getTitle()));
             out.println("<table class=\"table table-striped\">");
             out.println("<thead>");
             out.println("<tr>");
             for(Column column : columns) {
                 out.println(String.format("<th scope=\"col\">%s</th>", StringUtils.capitalize(column.getCaption())));
+            }
+            String editAction = tableModel.getEditAction();
+            if(editAction != null && !rows.isEmpty() && rows.get(0) instanceof Persistent<?>) {
+                out.println("<th scope=\"col\">Действия</th>");
             }
             out.println("</tr>");
             out.println("</thead>");
@@ -42,6 +49,14 @@ public class TableTag extends TagSupport {
                 out.println("<tr>");
                 for(Column column : columns) {
                     out.println(String.format("<td>%s</td>", tableModel.getValueAt(row, column)));
+                }
+                if(editAction != null && row instanceof Persistent<?>) {
+                    Serializable id = ((Persistent<?>) row).getId();
+                    if(id != null) {
+                        out.println("<td>");
+                        out.println(String.format("<a href=\"%s?id=%s\" class=\"btn btn-primary btn-sm\">Редактировать</a>", editAction, id));
+                        out.println("</td>");
+                    }
                 }
                 out.println("</tr>");
             }

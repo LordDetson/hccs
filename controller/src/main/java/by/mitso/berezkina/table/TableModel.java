@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
+import by.mitso.berezkina.domain.Field;
 import by.mitso.berezkina.domain.Persistent;
 
 public abstract class TableModel<T extends Persistent<?>> extends AbstractTableModel {
@@ -12,9 +13,12 @@ public abstract class TableModel<T extends Persistent<?>> extends AbstractTableM
     private final List<T> elements;
     private ColumnList columnList;
 
-    protected TableModel(String title, List<T> elements) {
+    private final String editAction;
+
+    protected TableModel(String title, List<T> elements, String editAction) {
         this.title = title;
         this.elements = elements;
+        this.editAction = editAction;
     }
 
     public String getTitle() {
@@ -59,4 +63,8 @@ public abstract class TableModel<T extends Persistent<?>> extends AbstractTableM
     }
 
     protected abstract ColumnList createColumnPropertyList();
+
+    public String getEditAction() {
+        return editAction;
+    }
 }

@@ -33,7 +33,7 @@ public class InputFormTag extends TagSupport {
                 out.println("<div class=\"mb-3 row\">");
                 out.println(String.format("<label for=\"%s\" class=\"col-sm-3 col-form-label\">%s:</label>", inputId, field.getCaption()));
                 out.println("<div class=\"col-sm-9\">");
-                out.print(String.format("<input type=\"%s\" id=\"%s\" name=\"%s\" class=\"form-control\"", field.getType().getName(), inputId, field.getName()));
+                out.print(String.format("<input type=\"%s\" id=\"%s\" name=\"%s\" value=\"%s\" class=\"form-control\"", field.getType().getName(), inputId, field.getName(), field.getValue()));
                 if(field.isRequired()) {
                     out.print(" required");
                 }

@@ -2,12 +2,18 @@ package by.mitso.berezkina.field;
 
 import java.util.Objects;
 
+import org.apache.commons.lang3.StringUtils;
+
+import by.mitso.berezkina.converter.FieldTypeConverter;
+import by.mitso.berezkina.domain.Field;
+
 public class InputField {
 
-    private final String name;
-    private final String caption;
+    private static final FieldTypeConverter FIELD_TYPE_CONVERTER = new FieldTypeConverter();
+
+    private final Field field;
     private final InputFieldType type;
-    private final boolean required;
+    private String value;
 
     public enum InputFieldType {
         TEXT("text"),
@@ -28,27 +34,38 @@ public class InputField {
         }
     }
 
-    public InputField(String name, String caption, InputFieldType type, boolean required) {
-        this.name = name;
-        this.caption = caption;
-        this.type = type;
-        this.required = required;
+    public InputField(Field field) {
+        this.field = field;
+        this.type = FIELD_TYPE_CONVERTER.convert(field.getType());
+        this.value = "";
     }
 
     public String getName() {
-        return name;
+        return field.getName();
     }
 
     public String getCaption() {
-        return caption;
+        return StringUtils.capitalize(field.getCaption());
     }
 
     public InputFieldType getType() {
         return type;
     }
 
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
     public boolean isRequired() {
-        return required;
+        return field.isRequired();
+    }
+
+    public Field getField() {
+        return field;
     }
 
     @Override
@@ -60,18 +77,11 @@ public class InputField {
             return false;
         }
         InputField that = (InputField) o;
-        return name.equals(that.name);
+        return field.equals(that.field);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name);
-    }
-
-    @Override
-    public String toString() {
-        return "InputField{" +
-                "name='" + name + '\'' +
-                '}';
+        return Objects.hash(field);
     }
 }
