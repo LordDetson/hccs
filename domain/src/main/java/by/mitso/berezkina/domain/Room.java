@@ -1,5 +1,6 @@
 package by.mitso.berezkina.domain;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.BiConsumer;
@@ -41,9 +42,9 @@ public class Room extends Persistent<Integer> {
     private Byte numberOfBeds;
 
     @OneToMany(mappedBy = "room", fetch = FetchType.EAGER, cascade = CascadeType.PERSIST, orphanRemoval = true)
-    private Set<Tariff> tariffs;
+    private List<Tariff> tariffs;
 
-    @OneToMany(mappedBy = "room", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    @OneToMany(mappedBy = "room", fetch = FetchType.EAGER, cascade = CascadeType.PERSIST, orphanRemoval = true)
     private Set<RoomAssignment> assignments;
 
     public enum RoomField implements Field {
@@ -61,8 +62,8 @@ public class Room extends Persistent<Integer> {
                 (room, value) -> room.setMaxPeople((Byte) value)),
         NUMBER_OF_BEDS("numberOfBeds", "количество краватей", Byte.class, false, Room::getNumberOfBeds,
                 (room, value) -> room.setNumberOfBeds((Byte) value)),
-        TARIFFS("tariffs", "тарифы", Set.class, false, Room::getTariffs,
-                (room, value) -> room.setTariffs((Set<Tariff>) value)),
+        TARIFFS("tariffs", "тарифы", List.class, false, Room::getTariffs,
+                (room, value) -> room.setTariffs((List<Tariff>) value)),
         ASSIGNMENTS("assignments", "история назначений", Set.class, false, Room::getAssignments,
                 null),
         ;
@@ -229,11 +230,11 @@ public class Room extends Persistent<Integer> {
         }
     }
 
-    public Set<Tariff> getTariffs() {
+    public List<Tariff> getTariffs() {
         return tariffs;
     }
 
-    public void setTariffs(Set<Tariff> tariffs) {
+    public void setTariffs(List<Tariff> tariffs) {
         this.tariffs = tariffs;
     }
 

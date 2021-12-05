@@ -122,7 +122,12 @@ public class CrudRepositoryImpl<T extends Persistent<ID>, ID extends Serializabl
         entityManager.getTransaction().begin();
         int flushCounter = 0;
         for(S entity : entities) {
-            entityManager.persist(entity);
+            if(entity.getId() == null) {
+                entityManager.persist(entity);
+            }
+            else {
+                entityManager.merge(entity);
+            }
             if(++flushCounter == MAX_COUNT_IN_BATCH) {
                 entityManager.flush();
                 entityManager.clear();

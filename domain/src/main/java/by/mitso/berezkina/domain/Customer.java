@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -42,7 +43,7 @@ public class Customer extends Persistent<Long> {
     @Column(name = "gender", nullable = false)
     private Gender gender;
 
-    @OneToMany(mappedBy="owner", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy="owner", fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     private Set<RoomAssignment> assignments;
 
     public enum CustomerField implements Field {
@@ -62,7 +63,7 @@ public class Customer extends Persistent<Long> {
                 (customer, value) -> customer.setBirthday((LocalDate) value)),
         GENDER("gender", "пол", Gender.class, true, Customer::getGender,
                 (customer, value) -> customer.setGender((Gender) value)),
-        assignments("assignments", "назначеные комнаты", Set.class, false, Customer::getAssignments,
+        ASSIGNMENTS("assignments", "назначеные комнаты", Set.class, false, Customer::getAssignments,
                 (customer, value) -> customer.setAssignments((Set<RoomAssignment>) value))
         ;
 

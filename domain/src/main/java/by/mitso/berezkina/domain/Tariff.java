@@ -33,14 +33,17 @@ import by.mitso.berezkina.domain.exception.DomainChecker;
 @Table(name = "tariffs")
 public class Tariff extends Persistent<Long> implements MonetaryAmount {
 
+    @Column(name = "number_of_days", nullable = false)
+    private Integer numberOfDays;
+
+    @Column(name = "description")
+    private String description;
+
     @Column(name = "amount", nullable = false)
     private Double amount;
 
     @Column(name = "currency", nullable = false)
     private String currencyCode;
-
-    @Column(name = "description")
-    private String description;
 
     @ManyToOne
     @JoinColumn(name = "room_id", nullable = false)
@@ -53,12 +56,14 @@ public class Tariff extends Persistent<Long> implements MonetaryAmount {
     private MonetaryAmount monetaryAmount;
 
     public enum TariffField implements Field {
+        NUMBER_OF_DAYS("numberOfDays", "количество дней", Integer.class, true, Tariff::getNumberOfDays,
+                (tariff, value) -> tariff.setNumberOfDays((Integer) value)),
+        DESCRIPTION("description", "описание", String.class, false, Tariff::getDescription,
+                (tariff, value) -> tariff.setDescription((String) value)),
         AMOUNT("amount", "стоимость", Number.class, true, Tariff::getNumber,
                 (tariff, value) -> tariff.setAmount((Double) value)),
         CURRENCY_CODE("currencyCode", "валюта", String.class, true, Tariff::getCurrencyCode,
                 (tariff, value) -> tariff.setCurrencyCode((String) value)),
-        DESCRIPTION("description", "описание", String.class, false, Tariff::getDescription,
-                (tariff, value) -> tariff.setDescription((String) value)),
         ROOM("room", "комната", Room.class, true, Tariff::getRoom,
                 null),
         ASSIGNMENTS("assignments", "история назначений", Set.class, false, Tariff::getAssignments,
@@ -120,13 +125,35 @@ public class Tariff extends Persistent<Long> implements MonetaryAmount {
         // for ORM
     }
 
-    public Tariff(Number amount, String currencyCode, Room room) {
+    public Tariff(Integer numberOfDays, Number amount, String currencyCode, Room room) {
+        DomainChecker.checkNotNull(numberOfDays, TariffField.NUMBER_OF_DAYS.getName());
+        DomainChecker.checkNotNull(amount, TariffField.AMOUNT.getName());
+        DomainChecker.checkNotNull(currencyCode, TariffField.CURRENCY_CODE.getName());
+        DomainChecker.checkNotNull(room, TariffField.ROOM.getName());
+        this.numberOfDays = numberOfDays;
         this.monetaryAmount = Money.of(amount, currencyCode);
         this.room = room;
     }
 
+    public Integer getNumberOfDays() {
+        return numberOfDays;
+    }
+
+    public void setNumberOfDays(Integer numberOfDays) {
+        DomainChecker.checkNotNull(numberOfDays, TariffField.NUMBER_OF_DAYS.getName());
+        this.numberOfDays = numberOfDays;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public Double getAmount() {
-        return getNumber().numberValue(Double.TYPE);
+        return getNumber().numberValue(Double.class);
     }
 
     public void setAmount(Double amount) {
@@ -141,14 +168,6 @@ public class Tariff extends Persistent<Long> implements MonetaryAmount {
     public void setCurrencyCode(String currencyCode) {
         DomainChecker.checkNotNull(currencyCode, TariffField.CURRENCY_CODE.getName());
         monetaryAmount = Money.of(getAmount(), currencyCode);
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public Room getRoom() {
@@ -362,13 +381,14 @@ public class Tariff extends Persistent<Long> implements MonetaryAmount {
         if(o == null || getClass() != o.getClass()) {
             return false;
         }
-        Tariff that = (Tariff) o;
-        return monetaryAmount.equals(that.monetaryAmount);
+        Tariff tariff = (Tariff) o;
+        return numberOfDays.equals(tariff.numberOfDays) && room.equals(tariff.room) && Objects.equals(monetaryAmount,
+                tariff.monetaryAmount);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(monetaryAmount);
+        return Objects.hash(numberOfDays, room, monetaryAmount);
     }
 
     @Override

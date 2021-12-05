@@ -115,14 +115,13 @@ public class Payment extends Persistent<Long> implements MonetaryAmount {
         // for ORM
     }
 
-    public Payment(Number amount, String currencyCode, LocalDateTime dateTime, RoomAssignment assignment) {
+    public Payment(Number amount, String currencyCode, LocalDateTime dateTime) {
         this.monetaryAmount = Money.of(amount, currencyCode);
         this.dateTime = dateTime;
-        this.assignment = assignment;
     }
 
     public Double getAmount() {
-        return getNumber().numberValue(Double.TYPE);
+        return getNumber().numberValue(Double.class);
     }
 
     public void setAmount(Double amount) {
@@ -145,6 +144,10 @@ public class Payment extends Persistent<Long> implements MonetaryAmount {
 
     public RoomAssignment getAssignment() {
         return assignment;
+    }
+
+    public void setAssignment(RoomAssignment assignment) {
+        this.assignment = assignment;
     }
 
     public static Set<Field> getAllFields() {

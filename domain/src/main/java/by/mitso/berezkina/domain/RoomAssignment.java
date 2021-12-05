@@ -115,10 +115,11 @@ public class RoomAssignment extends Persistent<Long> {
         // for ORM
     }
 
-    public RoomAssignment(Customer owner, Room room, Tariff tariff, LocalDateTime completeDateTime) {
+    public RoomAssignment(Customer owner, Room room, Tariff tariff, Payment payment, LocalDateTime completeDateTime) {
         this.owner = owner;
         this.room = room;
         this.tariff = tariff;
+        this.payment = payment;
         this.completeDateTime = completeDateTime;
         this.status = RoomAssignmentStatus.IN_PROGRESS;
     }

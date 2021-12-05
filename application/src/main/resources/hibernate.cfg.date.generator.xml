@@ -6,13 +6,16 @@
     <session-factory>
         <!-- JNDI Datasource settings -->
         <property name="hibernate.connection.driver_class">com.mysql.cj.jdbc.Driver</property>
-        <property name="hibernate.connection.datasource">java:comp/env/jdbc/hccs</property>
+        <property name="connection.url">jdbc:mysql://localhost:3306/hccs</property>
+        <property name="connection.username">root</property>
+        <property name="connection.password">root</property>
+        <property name="connection.pool_size">1</property>
         <!-- Select our SQL dialect -->
         <property name="hibernate.dialect">org.hibernate.dialect.MySQL8Dialect</property>
         <!-- Set the current session context -->
         <property name="hibernate.current_session_context_class">thread</property>
         <!-- Drop and re-create the database schema on startup -->
-        <property name="hibernate.hbm2ddl.auto">update</property>
+        <property name="hibernate.hbm2ddl.auto">create</property>
         <!-- Echo the SQL to stdout -->
         <property name="hibernate.show_sql">true</property>
         <property name="hibernate.format_sql">true</property>
