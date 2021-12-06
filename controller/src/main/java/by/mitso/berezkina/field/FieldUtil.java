@@ -1,5 +1,6 @@
 package by.mitso.berezkina.field;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -9,7 +10,9 @@ import java.util.Set;
 
 import by.mitso.berezkina.converter.Converter;
 import by.mitso.berezkina.converter.FieldConverter;
+import by.mitso.berezkina.domain.Customer.CustomerField;
 import by.mitso.berezkina.domain.Field;
+import by.mitso.berezkina.domain.Gender;
 import by.mitso.berezkina.domain.Room.RoomField;
 import by.mitso.berezkina.domain.RoomType.RoomTypeField;
 import jakarta.servlet.http.HttpServletRequest;
@@ -46,6 +49,18 @@ public class FieldUtil {
         return FieldUtil.convertToInputFields(orderedFields);
     }
 
+    public static Set<InputField> getCustomerOrderedInputFields() {
+        Set<CustomerField> orderedFields = new LinkedHashSet<>();
+        orderedFields.add(CustomerField.FIRST_NAME);
+        orderedFields.add(CustomerField.LAST_NAME);
+        orderedFields.add(CustomerField.PASSPORT_ID);
+        orderedFields.add(CustomerField.IDENTIFIER_NUMBER);
+        orderedFields.add(CustomerField.COUNTRY);
+        orderedFields.add(CustomerField.NATIONALITY);
+        orderedFields.add(CustomerField.BIRTHDAY);
+        return FieldUtil.convertToInputFields(orderedFields);
+    }
+
     public static Map<Field, Object> createFieldValueMap(Set<? extends Field> fields, HttpServletRequest req) {
         Map<Field, Object> fieldValueMap = new HashMap<>();
         Enumeration<String> parameterNames = req.getParameterNames();
@@ -65,6 +80,19 @@ public class FieldUtil {
         }
         else if(type.isAssignableFrom(Integer.class)) {
             return Integer.valueOf(value);
+        }
+        else if(type.isAssignableFrom(Long.class)) {
+            return Long.valueOf(value);
+        }
+        else if(type.isAssignableFrom(LocalDate.class)) {
+            return LocalDate.parse(value);
+        }
+        else if(type.isAssignableFrom(Gender.class)) {
+            for(Gender gender : Gender.values()) {
+                if(gender.getName().equals(value)) {
+                    return gender;
+                }
+            }
         }
         return value;
     }

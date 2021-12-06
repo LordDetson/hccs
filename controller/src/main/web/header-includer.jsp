@@ -16,6 +16,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="${pageContext.request.contextPath}/rooms">Комнаты</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="${pageContext.request.contextPath}/customers">Клиенты</a>
+                    </li>
                     <%--<li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="#">Home</a>
                     </li>

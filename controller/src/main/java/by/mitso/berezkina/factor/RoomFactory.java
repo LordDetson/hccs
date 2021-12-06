@@ -40,7 +40,7 @@ public class RoomFactory implements Factory<Room> {
      * In this method, getInstance is not synchronized but the block which creates instance is synchronized
      * so that minimum number of threads have to wait and that’s only for first time.
      *
-     * @return room type factory
+     * @return room factory
      */
     public static RoomFactory getInstance(Field roomTypesField, CrudRepository<RoomType, Integer> roomTypeRepository) {
         if(INSTANCE == null) {

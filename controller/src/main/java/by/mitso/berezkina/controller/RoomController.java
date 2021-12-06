@@ -31,12 +31,11 @@ import by.mitso.berezkina.table.ColumnList;
 import by.mitso.berezkina.table.TableModel;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @WebServlet(name = "RoomController", urlPatterns = { "/rooms/*", "/room/*" })
-public class RoomController extends HttpServlet {
+public class RoomController extends BaseController {
 
     private static final String ADD_ROOM_TYPE = "/room/type/add";
     private static final String GET_ROOM_TYPES = "/rooms/types";
@@ -48,9 +47,6 @@ public class RoomController extends HttpServlet {
     private static final String EDIT_ROOM = "/room/edit";
     private static final String DELETE_ROOM = "/room/delete";
 
-    private static final String STANDARD_FORM_VIEW = "/template/standardForm.jsp";
-    private static final String STANDARD_TABLE_VIEW = "/template/standardTable.jsp";
-
     private static final Field ROOM_TYPES_FIELD = new DynamicField(RoomField.ROOM_TYPE.getName(), "типы комнат", Set.class, true, null, null);
 
     private CrudRepository<RoomType, Integer> roomTypeRepository;
@@ -60,7 +56,7 @@ public class RoomController extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-        SessionFactory sessionFactory = (SessionFactory) getServletContext().getAttribute("SessionFactory");
+        SessionFactory sessionFactory = getSessionFactory();
         roomTypeRepository = new CrudRepositoryImpl<>(sessionFactory.openSession(), RoomType.class);
         roomRepository = new CrudRepositoryImpl<>(sessionFactory.openSession(), Room.class);
         roomFactory = RoomFactory.getInstance(ROOM_TYPES_FIELD, roomTypeRepository);
@@ -75,13 +71,11 @@ public class RoomController extends HttpServlet {
                     ADD_ROOM_TYPE,
                     FieldUtil.getRoomTypeOrderedInputFields(),
                     "Создать");
-            req.setAttribute("inputForm", inputForm);
-            forwardStandardForm(req, resp);
+            forwardStandardForm(req, resp, inputForm);
         }
         else if(isRoomTypeShow(req)) {
             TableModel<RoomType> tableModel = createRoomTypeTableModel();
-            req.setAttribute("tableModel", tableModel);
-            forwardStandardTable(req, resp);
+            forwardStandardTable(req, resp, tableModel);
         }
         else if(isRoomTypeEditing(req)) {
             Integer id = Integer.valueOf(req.getParameter(RoomTypeField.ID.getName()));
@@ -100,8 +94,7 @@ public class RoomController extends HttpServlet {
                         EDIT_ROOM_TYPE + "?id=" + id,
                         inputFields,
                         "Обновить");
-                req.setAttribute("inputForm", inputForm);
-                forwardStandardForm(req, resp);
+                forwardStandardForm(req, resp, inputForm);
             }
         }
         else if(isRoomTypeDeletion(req)) {
@@ -118,13 +111,11 @@ public class RoomController extends HttpServlet {
                     ADD_ROOM,
                     inputFields,
                     "Создать");
-            req.setAttribute("inputForm", inputForm);
-            forwardStandardForm(req, resp);
+            forwardStandardForm(req, resp, inputForm);
         }
         else if(isRoomShow(req)) {
             TableModel<Room> tableModel = createRoomTableModel();
-            req.setAttribute("tableModel", tableModel);
-            forwardStandardTable(req, resp);
+            forwardStandardTable(req, resp, tableModel);
         }
         else if(isRoomEditing(req)) {
             Integer id = Integer.valueOf(req.getParameter(RoomField.ID.getName()));
@@ -144,8 +135,7 @@ public class RoomController extends HttpServlet {
                         EDIT_ROOM + "?id=" + id,
                         inputFields,
                         "Обновить");
-                req.setAttribute("inputForm", inputForm);
-                forwardStandardForm(req, resp);
+                forwardStandardForm(req, resp, inputForm);
             }
         }
         else if(isRoomDeletion(req)) {
@@ -241,10 +231,6 @@ public class RoomController extends HttpServlet {
         return isAction(req, DELETE_ROOM);
     }
 
-    private boolean isAction(HttpServletRequest req, String action) {
-        return req.getRequestURI().contains(action);
-    }
-
     private TableModel<RoomType> createRoomTypeTableModel() {
         String title = "Таблица типов комнат";
         Iterator<RoomType> iterator = roomTypeRepository.findAll().iterator();
@@ -309,13 +295,5 @@ public class RoomController extends HttpServlet {
         tableModel.setEditAction(EDIT_ROOM);
         tableModel.setDeleteAction(DELETE_ROOM);
         return tableModel;
-    }
-
-    private void forwardStandardForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        getServletContext().getRequestDispatcher(STANDARD_FORM_VIEW).forward(req, resp);
-    }
-
-    private void forwardStandardTable(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        getServletContext().getRequestDispatcher(STANDARD_TABLE_VIEW).forward(req, resp);
     }
 }

@@ -47,6 +47,8 @@ public class Customer extends Persistent<Long> {
     private Set<RoomAssignment> assignments;
 
     public enum CustomerField implements Field {
+        ID("id", "ID", Long.class, false, Customer::getId,
+                (customer, value) -> customer.setId((Long) value)),
         FIRST_NAME("firstName", "имя", String.class, true, Customer::getFirstName,
                 (customer, value) -> customer.setFirstName((String) value)),
         LAST_NAME("lastName", "фамилия", String.class, true, Customer::getLastName,

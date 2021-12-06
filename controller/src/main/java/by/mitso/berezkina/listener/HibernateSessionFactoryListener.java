@@ -18,6 +18,8 @@ import jakarta.servlet.annotation.WebListener;
 @WebListener
 public class HibernateSessionFactoryListener implements ServletContextListener {
 
+    public static final String SESSION_FACTORY_ATTRIBUTE = "SessionFactory";
+
     private ServiceRegistry serviceRegistry;
 
     @Override
@@ -34,12 +36,12 @@ public class HibernateSessionFactoryListener implements ServletContextListener {
         serviceRegistry = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties()).build();
         SessionFactory sessionFactory = configuration.buildSessionFactory(serviceRegistry);
 
-        servletContextEvent.getServletContext().setAttribute("SessionFactory", sessionFactory);
+        servletContextEvent.getServletContext().setAttribute(SESSION_FACTORY_ATTRIBUTE, sessionFactory);
     }
 
     @Override
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
-        SessionFactory sessionFactory = (SessionFactory) servletContextEvent.getServletContext().getAttribute("SessionFactory");
+        SessionFactory sessionFactory = (SessionFactory) servletContextEvent.getServletContext().getAttribute(SESSION_FACTORY_ATTRIBUTE);
         if(sessionFactory != null && !sessionFactory.isClosed()) {
             sessionFactory.close();
         }
