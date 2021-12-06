@@ -17,10 +17,20 @@
         </form-login-config>
     </login-config>
     <security-constraint>
-        <!--<web-resource-collection>
+        <web-resource-collection>
             <web-resource-name>rooms</web-resource-name>
+            <url-pattern>/index.jsp</url-pattern>
+        </web-resource-collection>
+        <web-resource-collection>
+            <web-resource-name>rooms</web-resource-name>
+            <url-pattern>/rooms/*</url-pattern>
             <url-pattern>/room/*</url-pattern>
-        </web-resource-collection>-->
+        </web-resource-collection>
+        <web-resource-collection>
+            <web-resource-name>customers</web-resource-name>
+            <url-pattern>/customers/*</url-pattern>
+            <url-pattern>/customer/*</url-pattern>
+        </web-resource-collection>
         <auth-constraint>
             <role-name>administrator</role-name>
             <role-name>user</role-name>
