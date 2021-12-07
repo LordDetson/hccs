@@ -3,9 +3,6 @@ package by.mitso.berezkina.domain;
 import java.io.Serializable;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
 
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
@@ -37,7 +34,10 @@ public abstract class Persistent<ID extends Serializable> {
     }
 
     public void setFieldValue(Field field, Object value) {
-        field.setValue(this, value);
+        Object oldValue = getFieldValue(field);
+        if(!oldValue.equals(value)) {
+            field.setValue(this, value);
+        }
     }
 
     public void setFieldValue(Map<Field, ?> fieldValueMap) {
