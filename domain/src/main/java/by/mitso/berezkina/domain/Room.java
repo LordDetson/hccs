@@ -145,6 +145,9 @@ public class Room extends Persistent<Integer> {
     public void setRoomType(RoomType roomType) {
         DomainChecker.checkNotNull(roomType, RoomField.ROOM_TYPE.getName());
         this.roomType = roomType;
+        setMinPeople(null);
+        setMaxPeople(null);
+        setNumberOfBeds(null);
     }
 
     public String getDescription() {
