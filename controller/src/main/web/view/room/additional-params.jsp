@@ -9,7 +9,9 @@
 <body>
 <jsp:include page="${pageContext.request.contextPath}/header-includer.jsp"/>
 <div class="container">
-    <custom:input-form inputFormModel="${requestScope.inputFormModel}"/>
+    <custom:input-form inputFormModel="${requestScope.roomInputFormModel}"/>
+    <br/>
+    <custom:table tableModel="${requestScope.tariffTableModel}"/>
 </div>
 <jsp:include page="${pageContext.request.contextPath}/bootstrap-5.1.3-dist/bootstrap-css-includer.jsp"/>
 </body>

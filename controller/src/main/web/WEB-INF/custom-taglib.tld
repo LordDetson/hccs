@@ -11,10 +11,10 @@
 
     <tag>
         <name>input-form</name>
-        <tag-class>by.mitso.berezkina.tag.InputFormTag</tag-class>
+        <tag-class>by.mitso.berezkina.tag.InputForm</tag-class>
         <body-content>empty</body-content>
         <attribute>
-            <name>inputForm</name>
+            <name>inputFormModel</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
@@ -22,7 +22,7 @@
 
     <tag>
         <name>table</name>
-        <tag-class>by.mitso.berezkina.tag.TableTag</tag-class>
+        <tag-class>by.mitso.berezkina.tag.Table</tag-class>
         <body-content>empty</body-content>
         <attribute>
             <name>tableModel</name>

@@ -1,9 +1,6 @@
 package by.mitso.berezkina.field;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -18,6 +15,8 @@ public class InputField {
 
     private final Field field;
     private final InputFieldType type;
+    private boolean required;
+    private boolean readonly;
     private Set<String> values;
     private String selectedValue;
 
@@ -44,6 +43,7 @@ public class InputField {
     public InputField(Field field) {
         this.field = field;
         this.type = FIELD_TYPE_CONVERTER.convert(field.getType());
+        this.required = field.isRequired();
         this.values = Collections.emptySet();
     }
 
@@ -57,6 +57,24 @@ public class InputField {
 
     public InputFieldType getType() {
         return type;
+    }
+
+    public void setRequired(boolean required) {
+        if(required) {
+            readonly = false;
+        }
+        this.required = required;
+    }
+
+    public boolean isReadonly() {
+        return readonly;
+    }
+
+    public void setReadonly(boolean readonly) {
+        if(readonly) {
+            required = false;
+        }
+        this.readonly = readonly;
     }
 
     public Set<String> getValues() {

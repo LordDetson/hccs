@@ -42,10 +42,21 @@ public class FieldUtil {
         return FieldUtil.convertToInputFields(orderedFields);
     }
 
-    public static Set<InputField> getRoomOrderedInputFields() {
+    public static Set<InputField> getMainRoomOrderedInputFields() {
         Set<RoomField> orderedFields = new LinkedHashSet<>();
         orderedFields.add(RoomField.NUMBER);
         orderedFields.add(RoomField.DESCRIPTION);
+        return FieldUtil.convertToInputFields(orderedFields);
+    }
+
+    public static Set<InputField> getAllRoomOrderedInputFields() {
+        Set<RoomField> orderedFields = new LinkedHashSet<>();
+        orderedFields.add(RoomField.NUMBER);
+        orderedFields.add(RoomField.DESCRIPTION);
+        orderedFields.add(RoomField.ROOM_TYPE);
+        orderedFields.add(RoomField.MIN_PEOPLE);
+        orderedFields.add(RoomField.MAX_PEOPLE);
+        orderedFields.add(RoomField.NUMBER_OF_BEDS);
         return FieldUtil.convertToInputFields(orderedFields);
     }
 

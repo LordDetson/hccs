@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Set;
 
+import by.mitso.berezkina.domain.RoomType;
 import by.mitso.berezkina.field.InputField.InputFieldType;
 
 public class FieldTypeConverter implements Converter<Class<?>, InputFieldType>{
@@ -14,7 +15,8 @@ public class FieldTypeConverter implements Converter<Class<?>, InputFieldType>{
         if(Number.class.isAssignableFrom(type)) {
             return InputFieldType.NUMBER;
         }
-        else if(String.class.isAssignableFrom(type)) {
+        else if(String.class.isAssignableFrom(type) ||
+                RoomType.class.isAssignableFrom(type)) {
             return InputFieldType.TEXT;
         }
         else if(LocalDate.class.isAssignableFrom(type)) {

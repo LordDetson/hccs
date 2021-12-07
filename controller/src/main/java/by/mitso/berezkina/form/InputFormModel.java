@@ -1,17 +1,19 @@
 package by.mitso.berezkina.form;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import by.mitso.berezkina.field.InputField;
 
-public class InputForm {
+public class InputFormModel {
 
     private String title;
     private String name;
     private String action;
     private InputFormMethod method;
     private Set<InputField> inputFields;
-    private String submitText;
+    private List<FormSubmitButton> submitButtons = new ArrayList<>();
 
     public enum InputFormMethod {
         GET("get"), POST("post");
@@ -27,13 +29,17 @@ public class InputForm {
         }
     }
 
-    public InputForm(String title, String name, String action, Set<InputField> inputFields, String submitText) {
+    public InputFormModel(String name, String action, Set<InputField> inputFields, String submitText) {
+        this(null, name, action, inputFields, submitText);
+    }
+
+    public InputFormModel(String title, String name, String action, Set<InputField> inputFields, String submitText) {
         this.title = title;
         this.name = name;
         this.action = action;
         this.method = InputFormMethod.POST;
         this.inputFields = inputFields;
-        this.submitText = submitText;
+        this.submitButtons.add(new FormSubmitButton(submitText));
     }
 
     public String getTitle() {
@@ -76,12 +82,12 @@ public class InputForm {
         this.inputFields = inputFields;
     }
 
-    public String getSubmitText() {
-        return submitText;
+    public List<FormSubmitButton> getSubmitButtons() {
+        return submitButtons;
     }
 
-    public void setSubmitText(String submitText) {
-        this.submitText = submitText;
+    public void setSubmitButtons(List<FormSubmitButton> submitButtons) {
+        this.submitButtons = submitButtons;
     }
 
     @Override

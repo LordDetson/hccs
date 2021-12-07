@@ -21,7 +21,7 @@ import by.mitso.berezkina.factor.Factory;
 import by.mitso.berezkina.field.DynamicField;
 import by.mitso.berezkina.field.FieldUtil;
 import by.mitso.berezkina.field.InputField;
-import by.mitso.berezkina.form.InputForm;
+import by.mitso.berezkina.form.InputFormModel;
 import by.mitso.berezkina.table.Column;
 import by.mitso.berezkina.table.ColumnList;
 import by.mitso.berezkina.table.TableModel;
@@ -62,13 +62,13 @@ public class CustomerController extends BaseController {
             }
             gendersField.setValues(genderNames);
             inputFields.add(gendersField);
-            InputForm inputForm = new InputForm(
+            InputFormModel inputFormModel = new InputFormModel(
                     "Форма клиента",
                     "createCustomer",
                     ADD_CUSTOMER,
                     inputFields,
                     "Создать");
-            forwardStandardForm(req, resp, inputForm);
+            forwardStandardForm(req, resp, inputFormModel);
         }
         else if(isAction(req, GET_CUSTOMERS)) {
             TableModel<Customer> tableModel = createCustomerTableModel();
@@ -91,13 +91,13 @@ public class CustomerController extends BaseController {
                 gendersField.setValues(genderNames);
                 gendersField.setSelectedValue(customerToEdit.get().getGender().getName());
                 inputFields.add(gendersField);
-                InputForm inputForm = new InputForm(
+                InputFormModel inputFormModel = new InputFormModel(
                         "Форма клиента",
                         "editCustomer",
                         EDIT_CUSTOMER + "?id=" + id,
                         inputFields,
                         "Обновить");
-                forwardStandardForm(req, resp, inputForm);
+                forwardStandardForm(req, resp, inputFormModel);
             }
         }
         else if(isAction(req, DELETE_CUSTOMER)) {

@@ -1,41 +1,51 @@
 package by.mitso.berezkina.tag;
 
 import java.io.IOException;
+import java.util.Optional;
 import java.util.Set;
 
 import by.mitso.berezkina.field.InputField;
 import by.mitso.berezkina.field.InputField.InputFieldType;
-import by.mitso.berezkina.form.InputForm;
+import by.mitso.berezkina.form.FormSubmitButton;
+import by.mitso.berezkina.form.InputFormModel;
 import jakarta.servlet.jsp.JspException;
 import jakarta.servlet.jsp.JspWriter;
 import jakarta.servlet.jsp.tagext.TagSupport;
 
-public class InputFormTag extends TagSupport {
+public class InputForm extends TagSupport {
 
-    private InputForm inputForm;
+    private InputFormModel inputFormModel;
 
-    public InputForm getInputForm() {
-        return inputForm;
+    public InputFormModel getInputFormModel() {
+        return inputFormModel;
     }
 
-    public void setInputForm(InputForm inputForm) {
-        this.inputForm = inputForm;
+    public void setInputFormModel(InputFormModel inputFormModel) {
+        this.inputFormModel = inputFormModel;
     }
 
     @Override
     public int doStartTag() throws JspException {
         JspWriter out = pageContext.getOut();
         try {
-            out.println(String.format("<h3>%s</h3>", inputForm.getTitle()));
-            out.println(String.format("<form name=\"%s\" action=\"%s\" method=\"%s\">", inputForm.getName(), inputForm.getAction(),
-                    inputForm.getMethod().getName()));
+            out.println(String.format("<h3>%s</h3>", inputFormModel.getTitle()));
+            out.println(String.format("<form name=\"%s\" action=\"%s\" method=\"%s\">", inputFormModel.getName(), inputFormModel.getAction(),
+                    inputFormModel.getMethod().getName()));
             Integer counter = 0;
-            for(InputField field : inputForm.getInputFields()) {
+            for(InputField field : inputFormModel.getInputFields()) {
                 String inputId = field.getName() + "_" + counter;
                 addInputField(out, inputId, field, counter == 0);
                 counter++;
             }
-            out.println(String.format("<button type=\"submit\" class=\"btn btn-success\">%s</button>", inputForm.getSubmitText()));
+            for(FormSubmitButton submitButton: inputFormModel.getSubmitButtons()) {
+
+                out.print("<button type=\"submit\"");
+                Optional<String> formAction = submitButton.getFormAction();
+                if(formAction.isPresent()) {
+                    out.print(String.format(" formaction=\"%s\"", formAction.get()));
+                }
+                out.println(String.format(" class=\"btn btn-success\">%s</button>", submitButton.getText()));
+            }
             out.println("</form>");
         }
         catch(IOException e) {
@@ -56,6 +66,9 @@ public class InputFormTag extends TagSupport {
                             inputId, field.getName(), value));
             if(field.isRequired()) {
                 out.print(" required");
+            }
+            if(field.isReadonly()) {
+                out.print(" readonly");
             }
             if(autofocus) {
                 out.print(" autofocus");

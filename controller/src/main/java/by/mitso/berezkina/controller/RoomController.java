@@ -19,13 +19,16 @@ import by.mitso.berezkina.domain.Room;
 import by.mitso.berezkina.domain.Room.RoomField;
 import by.mitso.berezkina.domain.RoomType;
 import by.mitso.berezkina.domain.RoomType.RoomTypeField;
+import by.mitso.berezkina.domain.Tariff;
+import by.mitso.berezkina.domain.Tariff.TariffField;
 import by.mitso.berezkina.factor.Factory;
 import by.mitso.berezkina.factor.RoomFactory;
 import by.mitso.berezkina.factor.RoomTypeFactory;
 import by.mitso.berezkina.field.DynamicField;
 import by.mitso.berezkina.field.FieldUtil;
 import by.mitso.berezkina.field.InputField;
-import by.mitso.berezkina.form.InputForm;
+import by.mitso.berezkina.form.FormSubmitButton;
+import by.mitso.berezkina.form.InputFormModel;
 import by.mitso.berezkina.table.Column;
 import by.mitso.berezkina.table.ColumnList;
 import by.mitso.berezkina.table.TableModel;
@@ -43,9 +46,13 @@ public class RoomController extends BaseController {
     private static final String DELETE_ROOM_TYPE = "/room/type/delete";
 
     private static final String ADD_ROOM = "/room/add";
+    private static final String ADDITIONAL_ROOM_PARAMS_PARAMETER = "additionalRoomParams";
     private static final String GET_ROOMS = "/rooms";
     private static final String EDIT_ROOM = "/room/edit";
+    private static final String EDIT_ADDITIONAL_ROOM_PARAMS = "/room/edit/additional-params";
     private static final String DELETE_ROOM = "/room/delete";
+
+    private static final String ADDITIONAL_ROOM_PARAMS_VIEW = "/view/room/additional-params.jsp";
 
     private static final Field ROOM_TYPES_FIELD = new DynamicField(RoomField.ROOM_TYPE.getName(), "типы комнат", Set.class, true, null, null);
 
@@ -59,19 +66,19 @@ public class RoomController extends BaseController {
         SessionFactory sessionFactory = getSessionFactory();
         roomTypeRepository = new CrudRepositoryImpl<>(sessionFactory.openSession(), RoomType.class);
         roomRepository = new CrudRepositoryImpl<>(sessionFactory.openSession(), Room.class);
-        roomFactory = RoomFactory.getInstance(ROOM_TYPES_FIELD, roomTypeRepository);
+        roomFactory = RoomFactory.getInstance(roomTypeRepository);
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         if(isRoomTypeCreation(req)) {
-            InputForm inputForm = new InputForm(
+            InputFormModel inputFormModel = new InputFormModel(
                     "Форма типа комнаты",
                     "createRoomType",
                     ADD_ROOM_TYPE,
                     FieldUtil.getRoomTypeOrderedInputFields(),
                     "Создать");
-            forwardStandardForm(req, resp, inputForm);
+            forwardStandardForm(req, resp, inputFormModel);
         }
         else if(isRoomTypeShow(req)) {
             TableModel<RoomType> tableModel = createRoomTypeTableModel();
@@ -88,13 +95,13 @@ public class RoomController extends BaseController {
                         inputField.setValues(Collections.singleton(value.toString()));
                     }
                 }
-                InputForm inputForm = new InputForm(
+                InputFormModel inputFormModel = new InputFormModel(
                         "Форма типа комнаты",
                         "editRoomType",
                         EDIT_ROOM_TYPE + "?id=" + id,
                         inputFields,
                         "Обновить");
-                forwardStandardForm(req, resp, inputForm);
+                forwardStandardForm(req, resp, inputFormModel);
             }
         }
         else if(isRoomTypeDeletion(req)) {
@@ -103,15 +110,17 @@ public class RoomController extends BaseController {
             resp.sendRedirect(GET_ROOM_TYPES);
         }
         else if(isRoomCreation(req)) {
-            Set<InputField> inputFields = FieldUtil.getRoomOrderedInputFields();
+            Set<InputField> inputFields = FieldUtil.getMainRoomOrderedInputFields();
             addRoomTypesField(inputFields);
-            InputForm inputForm = new InputForm(
+            InputFormModel inputFormModel = new InputFormModel(
                     "Форма комнаты",
                     "createRoom",
                     ADD_ROOM,
                     inputFields,
                     "Создать");
-            forwardStandardForm(req, resp, inputForm);
+            inputFormModel.getSubmitButtons()
+                    .add(new FormSubmitButton("Доп. параметры", ADD_ROOM + "?" + ADDITIONAL_ROOM_PARAMS_PARAMETER));
+            forwardStandardForm(req, resp, inputFormModel);
         }
         else if(isRoomShow(req)) {
             TableModel<Room> tableModel = createRoomTableModel();
@@ -121,21 +130,53 @@ public class RoomController extends BaseController {
             Integer id = Integer.valueOf(req.getParameter(RoomField.ID.getName()));
             Optional<Room> roomToEdit = roomRepository.findById(id);
             if(roomToEdit.isPresent()) {
-                Set<InputField> inputFields = FieldUtil.getRoomOrderedInputFields();
-                for(InputField inputField : inputFields) {
-                    Object value = roomToEdit.get().getFieldValue(inputField.getField());
-                    if(value != null) {
-                        inputField.setValues(Collections.singleton(value.toString()));
+                if(isAction(req, EDIT_ADDITIONAL_ROOM_PARAMS)) {
+                    Set<InputField> inputFields = FieldUtil.getAllRoomOrderedInputFields();
+                    inputFields.stream()
+                            .filter(inputField -> inputField.getField().equals(RoomField.ROOM_TYPE))
+                            .findFirst().ifPresent(inputField -> inputField.setReadonly(true));
+                    for(InputField inputField : inputFields) {
+                        Object value = roomToEdit.get().getFieldValue(inputField.getField());
+                        if(value != null) {
+                            if(inputField.getField() == RoomField.ROOM_TYPE) {
+                                RoomType roomType = (RoomType) value;
+                                inputField.setValues(Collections.singleton(roomType.getName()));
+                            }
+                            else {
+                                inputField.setValues(Collections.singleton(value.toString()));
+                            }
+                        }
                     }
+                    InputFormModel roomInputFormModel = new InputFormModel(
+                            "Форма комнаты с дополнительными параметрами",
+                            "editAdditionalRoomParams",
+                            EDIT_ADDITIONAL_ROOM_PARAMS + "?id=" + id,
+                            inputFields,
+                            "Обновить");
+                    TableModel<Tariff> tariffTableModel = createTariffTableModel(roomToEdit.get());
+                    req.setAttribute("roomInputFormModel", roomInputFormModel);
+                    req.setAttribute("tariffTableModel", tariffTableModel);
+                    getServletContext().getRequestDispatcher(ADDITIONAL_ROOM_PARAMS_VIEW).forward(req, resp);
                 }
-                addRoomTypesField(inputFields, roomToEdit.get());
-                InputForm inputForm = new InputForm(
-                        "Форма комнаты",
-                        "editRoom",
-                        EDIT_ROOM + "?id=" + id,
-                        inputFields,
-                        "Обновить");
-                forwardStandardForm(req, resp, inputForm);
+                else {
+                    Set<InputField> inputFields = FieldUtil.getMainRoomOrderedInputFields();
+                    for(InputField inputField : inputFields) {
+                        Object value = roomToEdit.get().getFieldValue(inputField.getField());
+                        if(value != null) {
+                            inputField.setValues(Collections.singleton(value.toString()));
+                        }
+                    }
+                    addRoomTypesField(inputFields, roomToEdit.get());
+                    InputFormModel inputFormModel = new InputFormModel(
+                            "Форма комнаты",
+                            "editRoom",
+                            EDIT_ROOM + "?id=" + id,
+                            inputFields,
+                            "Обновить");
+                    inputFormModel.getSubmitButtons()
+                            .add(new FormSubmitButton("Доп. параметры", EDIT_ROOM + "?id=" + id + "&" + ADDITIONAL_ROOM_PARAMS_PARAMETER));
+                    forwardStandardForm(req, resp, inputFormModel);
+                }
             }
         }
         else if(isRoomDeletion(req)) {
@@ -184,17 +225,30 @@ public class RoomController extends BaseController {
         else if(isRoomCreation(req)) {
             Map<Field, Object> fieldValueMap = FieldUtil.createFieldValueMap(Room.getAllFields(), req);
             Room room = roomFactory.factor(fieldValueMap);
-            roomRepository.save(room);
-            resp.sendRedirect(GET_ROOMS);
+            room = roomRepository.save(room);
+            if(req.getParameterMap().containsKey(ADDITIONAL_ROOM_PARAMS_PARAMETER)) {
+                resp.sendRedirect(EDIT_ADDITIONAL_ROOM_PARAMS + "?id=" + room.getId());
+            }
+            else {
+                resp.sendRedirect(GET_ROOMS);
+            }
         }
         else if(isRoomEditing(req)) {
             Integer id = Integer.valueOf(req.getParameter(RoomField.ID.getName()));
-            if(roomRepository.existsById(id)) {
+            Optional<Room> room = roomRepository.findById(id);
+            if(room.isPresent()) {
                 Map<Field, Object> fieldValueMap = FieldUtil.createFieldValueMap(Room.getAllFields(), req);
-                Room room = roomFactory.factor(fieldValueMap);
-                room.setId(id);
-                roomRepository.save(room);
-                resp.sendRedirect(GET_ROOMS);
+                String roomTypeName = (String) fieldValueMap.get(RoomField.ROOM_TYPE);
+                roomTypeRepository.findByField(RoomTypeField.NAME, roomTypeName)
+                        .ifPresent(type -> fieldValueMap.put(RoomField.ROOM_TYPE, type));
+                room.get().setFieldValue(fieldValueMap);
+                roomRepository.save(room.get());
+                if(req.getParameterMap().containsKey(ADDITIONAL_ROOM_PARAMS_PARAMETER)) {
+                    resp.sendRedirect(EDIT_ADDITIONAL_ROOM_PARAMS + "?id=" + id);
+                }
+                else {
+                    resp.sendRedirect(GET_ROOMS);
+                }
             }
         }
     }
@@ -294,6 +348,25 @@ public class RoomController extends BaseController {
         tableModel.setCreateAction(ADD_ROOM);
         tableModel.setEditAction(EDIT_ROOM);
         tableModel.setDeleteAction(DELETE_ROOM);
+        return tableModel;
+    }
+
+    private TableModel<Tariff> createTariffTableModel(Room room) {
+        String title = String.format("Таблица тарифов для \"%s\" комнаты", room.getNumber());
+        List<Tariff> tariffs = room.getTariffs();
+        TableModel<Tariff> tableModel = new TableModel<>(title, tariffs) {
+
+            @Override
+            protected ColumnList createColumnList() {
+                ColumnList list = new ColumnList();
+                list.add(TariffField.ID).setCaption("#");
+                list.add(TariffField.NUMBER_OF_DAYS);
+                list.add(TariffField.DESCRIPTION);
+                list.add(TariffField.AMOUNT);
+                list.add(TariffField.CURRENCY_CODE);
+                return list;
+            }
+        };
         return tableModel;
     }
 }

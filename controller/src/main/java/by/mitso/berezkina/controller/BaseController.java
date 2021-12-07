@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import org.hibernate.SessionFactory;
 
-import by.mitso.berezkina.form.InputForm;
+import by.mitso.berezkina.form.InputFormModel;
 import by.mitso.berezkina.listener.HibernateSessionFactoryListener;
 import by.mitso.berezkina.table.TableModel;
 import jakarta.servlet.ServletException;
@@ -21,8 +21,8 @@ public class BaseController extends HttpServlet {
         return req.getRequestURI().contains(action);
     }
 
-    public void forwardStandardForm(HttpServletRequest req, HttpServletResponse resp, InputForm inputForm) throws ServletException, IOException {
-        req.setAttribute("inputForm", inputForm);
+    public void forwardStandardForm(HttpServletRequest req, HttpServletResponse resp, InputFormModel inputFormModel) throws ServletException, IOException {
+        req.setAttribute("inputFormModel", inputFormModel);
         getServletContext().getRequestDispatcher(STANDARD_FORM_VIEW).forward(req, resp);
     }
 

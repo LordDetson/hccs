@@ -13,11 +13,9 @@ import by.mitso.berezkina.domain.RoomType.RoomTypeField;
 public class RoomFactory implements Factory<Room> {
 
     private static RoomFactory INSTANCE;
-    private final Field roomTypesField;
     private final CrudRepository<RoomType, Integer> roomTypeRepository;
 
-    private RoomFactory(Field roomTypesField, CrudRepository<RoomType, Integer> roomTypeRepository) {
-        this.roomTypesField = roomTypesField;
+    private RoomFactory(CrudRepository<RoomType, Integer> roomTypeRepository) {
         this.roomTypeRepository = roomTypeRepository;
     }
 
@@ -42,11 +40,11 @@ public class RoomFactory implements Factory<Room> {
      *
      * @return room factory
      */
-    public static RoomFactory getInstance(Field roomTypesField, CrudRepository<RoomType, Integer> roomTypeRepository) {
+    public static RoomFactory getInstance(CrudRepository<RoomType, Integer> roomTypeRepository) {
         if(INSTANCE == null) {
             synchronized(RoomFactory.class) {
                 if(INSTANCE == null) {
-                    INSTANCE = new RoomFactory(roomTypesField, roomTypeRepository);
+                    INSTANCE = new RoomFactory(roomTypeRepository);
                 }
             }
         }
