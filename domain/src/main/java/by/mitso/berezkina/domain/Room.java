@@ -180,7 +180,10 @@ public class Room extends Persistent<Integer> {
                     "The minimum number of beds (%s) must be greater than or equal to the minimum number of beds of room type (%s) and less than or equal to the maximum number of beds (%s)",
                     minPeople, minPeopleOfRoomType, maxPeople));
         }
-        else if(!minPeople.equals(minPeopleOfRoomType)) {
+        else if(minPeople.equals(minPeopleOfRoomType)) {
+            this.minPeople = null;
+        }
+        else {
             this.minPeople = minPeople;
         }
     }
@@ -204,7 +207,10 @@ public class Room extends Persistent<Integer> {
                     "The maximum number of beds (%s) must be greater than or equal to the minimum number of beds (%s) and less than or equal to the maximum number of beds of room type (%s)",
                     maxPeople, minPeople, maxPeopleOfRoomType));
         }
-        else if(!minPeople.equals(maxPeopleOfRoomType)) {
+        else if(maxPeople.equals(maxPeopleOfRoomType)) {
+            this.maxPeople = null;
+        }
+        else {
             this.maxPeople = maxPeople;
         }
     }
@@ -223,12 +229,15 @@ public class Room extends Persistent<Integer> {
         if(numberOfBeds == null) {
             this.numberOfBeds = null;
         }
-        else if(minBedsOfRoomType < numberOfBeds || maxBedsOfRoomType > numberOfBeds) {
+        else if(minBedsOfRoomType > numberOfBeds || maxBedsOfRoomType < numberOfBeds) {
             throw new DomainConstraintException(String.format(
                     "The number of beds (%s) must be greater than or equal to the minimum number of beds (%s) and less than or equal to the maximum number of beds (%s)",
                     numberOfBeds, minBedsOfRoomType, maxBedsOfRoomType));
         }
-        else if(!numberOfBeds.equals(minBedsOfRoomType)) {
+        else if(numberOfBeds.equals(minBedsOfRoomType)) {
+            this.numberOfBeds = null;
+        }
+        else {
             this.numberOfBeds = numberOfBeds;
         }
     }
