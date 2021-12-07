@@ -114,7 +114,7 @@ public class CrudRepositoryImpl<T extends Persistent<ID>, ID extends Serializabl
             entityManager.merge(entity);
         }
         entityManager.getTransaction().commit();
-        return null;
+        return entity;
     }
 
     @Override
@@ -135,6 +135,6 @@ public class CrudRepositoryImpl<T extends Persistent<ID>, ID extends Serializabl
             }
         }
         entityManager.getTransaction().commit();
-        return null;
+        return entities;
     }
 }
