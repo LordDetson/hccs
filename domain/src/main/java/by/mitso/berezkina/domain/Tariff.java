@@ -56,6 +56,8 @@ public class Tariff extends Persistent<Long> implements MonetaryAmount {
     private MonetaryAmount monetaryAmount;
 
     public enum TariffField implements Field {
+        ID("id", "ID", Long.class, false, Tariff::getId,
+                (tariff, value) -> tariff.setId((Long) value)),
         NUMBER_OF_DAYS("numberOfDays", "количество дней", Integer.class, true, Tariff::getNumberOfDays,
                 (tariff, value) -> tariff.setNumberOfDays((Integer) value)),
         DESCRIPTION("description", "описание", String.class, false, Tariff::getDescription,
