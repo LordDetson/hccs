@@ -6,11 +6,9 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 
 import by.mitso.berezkina.domain.Customer;
-import by.mitso.berezkina.domain.Payment;
 import by.mitso.berezkina.domain.Room;
 import by.mitso.berezkina.domain.RoomAssignment;
 import by.mitso.berezkina.domain.RoomType;
-import by.mitso.berezkina.domain.Tariff;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;
@@ -29,8 +27,6 @@ public class HibernateSessionFactoryListener implements ServletContextListener {
         configuration.addAnnotatedClass(RoomType.class);
         configuration.addAnnotatedClass(Room.class);
         configuration.addAnnotatedClass(RoomAssignment.class);
-        configuration.addAnnotatedClass(Tariff.class);
-        configuration.addAnnotatedClass(Payment.class);
         configuration.addAnnotatedClass(Customer.class);
 
         serviceRegistry = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties()).build();

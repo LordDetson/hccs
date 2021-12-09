@@ -2,14 +2,10 @@ package by.mitso.berezkina.application.generator;
 
 import java.time.LocalDateTime;
 
-import javax.money.MonetaryAmount;
-
 import by.mitso.berezkina.application.repository.CrudRepository;
 import by.mitso.berezkina.domain.Customer;
-import by.mitso.berezkina.domain.Payment;
 import by.mitso.berezkina.domain.Room;
 import by.mitso.berezkina.domain.RoomAssignment;
-import by.mitso.berezkina.domain.Tariff;
 
 public class RoomAssignmentGenerator implements Generator {
 
@@ -28,13 +24,7 @@ public class RoomAssignmentGenerator implements Generator {
     public void generate() {
         Customer nastya = customerGenerator.getNastya();
         Room doubleRoom = roomGenerator.getDoubleRoom();
-        Tariff tariff = doubleRoom.getTariffs().iterator().next();
-        MonetaryAmount monetaryAmount = tariff.add(tariff);
-        int days = tariff.getNumberOfDays() * 2;
-        Payment payment = new Payment(monetaryAmount.getNumber(), monetaryAmount.getCurrency().getCurrencyCode(), LocalDateTime.now());
-        RoomAssignment assignment = new RoomAssignment(nastya, doubleRoom, tariff, payment, payment.getDateTime().plusDays(days));
-        payment.setAssignment(assignment);
-
+        RoomAssignment assignment = new RoomAssignment(nastya, doubleRoom, LocalDateTime.now().plusDays(20));
         roomAssignmentRepository.save(assignment);
     }
 }

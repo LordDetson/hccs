@@ -19,8 +19,6 @@ import by.mitso.berezkina.domain.Room;
 import by.mitso.berezkina.domain.Room.RoomField;
 import by.mitso.berezkina.domain.RoomType;
 import by.mitso.berezkina.domain.RoomType.RoomTypeField;
-import by.mitso.berezkina.domain.Tariff;
-import by.mitso.berezkina.domain.Tariff.TariffField;
 import by.mitso.berezkina.factor.Factory;
 import by.mitso.berezkina.factor.RoomFactory;
 import by.mitso.berezkina.factor.RoomTypeFactory;
@@ -51,8 +49,6 @@ public class RoomController extends BaseController {
     private static final String EDIT_ROOM = "/room/edit";
     private static final String EDIT_ADDITIONAL_ROOM_PARAMS = "/room/edit/additional-params";
     private static final String DELETE_ROOM = "/room/delete";
-
-    private static final String ADDITIONAL_ROOM_PARAMS_VIEW = "/view/room/additional-params.jsp";
 
     private static final Field ROOM_TYPES_FIELD = new DynamicField(RoomField.ROOM_TYPE.getName(), "типы комнат", Set.class, true, null, null);
 
@@ -153,10 +149,7 @@ public class RoomController extends BaseController {
                             EDIT_ADDITIONAL_ROOM_PARAMS + "?id=" + id,
                             inputFields,
                             "Обновить");
-                    TableModel<Tariff> tariffTableModel = createTariffTableModel(roomToEdit.get());
-                    req.setAttribute("roomInputFormModel", roomInputFormModel);
-                    req.setAttribute("tariffTableModel", tariffTableModel);
-                    getServletContext().getRequestDispatcher(ADDITIONAL_ROOM_PARAMS_VIEW).forward(req, resp);
+                    forwardStandardForm(req, resp, roomInputFormModel);
                 }
                 else {
                     Set<InputField> inputFields = FieldUtil.getMainRoomOrderedInputFields();
@@ -348,25 +341,6 @@ public class RoomController extends BaseController {
         tableModel.setCreateAction(ADD_ROOM);
         tableModel.setEditAction(EDIT_ROOM);
         tableModel.setDeleteAction(DELETE_ROOM);
-        return tableModel;
-    }
-
-    private TableModel<Tariff> createTariffTableModel(Room room) {
-        String title = String.format("Таблица тарифов для \"%s\" комнаты", room.getNumber());
-        List<Tariff> tariffs = room.getTariffs();
-        TableModel<Tariff> tableModel = new TableModel<>(title, tariffs) {
-
-            @Override
-            protected ColumnList createColumnList() {
-                ColumnList list = new ColumnList();
-                list.add(TariffField.ID).setCaption("#");
-                list.add(TariffField.NUMBER_OF_DAYS);
-                list.add(TariffField.DESCRIPTION);
-                list.add(TariffField.AMOUNT);
-                list.add(TariffField.CURRENCY_CODE);
-                return list;
-            }
-        };
         return tableModel;
     }
 }

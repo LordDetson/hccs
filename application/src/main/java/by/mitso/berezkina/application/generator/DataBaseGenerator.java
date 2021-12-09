@@ -12,11 +12,9 @@ import org.hibernate.service.ServiceRegistry;
 import by.mitso.berezkina.application.repository.CrudRepository;
 import by.mitso.berezkina.application.repository.CrudRepositoryImpl;
 import by.mitso.berezkina.domain.Customer;
-import by.mitso.berezkina.domain.Payment;
 import by.mitso.berezkina.domain.Room;
 import by.mitso.berezkina.domain.RoomAssignment;
 import by.mitso.berezkina.domain.RoomType;
-import by.mitso.berezkina.domain.Tariff;
 
 public class DataBaseGenerator implements Generator{
 
@@ -32,8 +30,6 @@ public class DataBaseGenerator implements Generator{
         configuration.addAnnotatedClass(RoomType.class);
         configuration.addAnnotatedClass(Room.class);
         configuration.addAnnotatedClass(RoomAssignment.class);
-        configuration.addAnnotatedClass(Tariff.class);
-        configuration.addAnnotatedClass(Payment.class);
         configuration.addAnnotatedClass(Customer.class);
 
         ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties()).build();
@@ -54,13 +50,12 @@ public class DataBaseGenerator implements Generator{
     public void generate() {
         CrudRepository<RoomType, Integer> roomTypeRepository = new CrudRepositoryImpl<>(entityManager, RoomType.class);
         CrudRepository<Room, Integer> roomRepository = new CrudRepositoryImpl<>(entityManager, Room.class);
-        CrudRepository<Tariff, Long> tariffRepository = new CrudRepositoryImpl<>(entityManager, Tariff.class);
         CrudRepository<Customer, Long> customerRepository = new CrudRepositoryImpl<>(entityManager, Customer.class);
         CrudRepository<RoomAssignment, Long> roomAssignmentRepository = new CrudRepositoryImpl<>(entityManager, RoomAssignment.class);
 
 
         RoomTypeGenerator roomTypeGenerator = new RoomTypeGenerator(roomTypeRepository);
-        RoomGenerator roomGenerator = new RoomGenerator(roomRepository, tariffRepository, roomTypeGenerator);
+        RoomGenerator roomGenerator = new RoomGenerator(roomRepository, roomTypeGenerator);
         CustomerGenerator customerGenerator = new CustomerGenerator(customerRepository);
         RoomAssignmentGenerator roomAssignmentGenerator = new RoomAssignmentGenerator(roomAssignmentRepository, customerGenerator,
                 roomGenerator);

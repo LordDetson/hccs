@@ -30,15 +30,8 @@ public class RoomAssignment extends Persistent<Long> {
     @JoinColumn(name = "room_id", nullable = false)
     private Room room;
 
-    @ManyToOne
-    @JoinColumn(name = "tariff_id", nullable = false)
-    private Tariff tariff;
-
     @Column(name = "complete_date_time")
     private LocalDateTime completeDateTime;
-
-    @OneToOne(mappedBy = "assignment", cascade = CascadeType.PERSIST)
-    private Payment payment;
 
     @Column(name = "status", nullable = false)
     private RoomAssignmentStatus status;
@@ -50,12 +43,8 @@ public class RoomAssignment extends Persistent<Long> {
                 null),
         ROOMS("room", "назначенная комната", Room.class, true, RoomAssignment::getRoom,
                 null),
-        TARIFF("tariff", "тариф", Tariff.class, true, RoomAssignment::getTariff,
-                null),
         COMPLETE_DATE_TIME("completeDateTime", "дата и время завершения", LocalDateTime.class, true, RoomAssignment::getCompleteDateTime,
                 null),
-        PAYMENT("payment", "сумма оплаты", Payment.class, true, RoomAssignment::getPayment,
-                (assignment, value) -> assignment.setPayment((Payment) value)),
         STATUS("status", "статус", RoomAssignmentStatus.class, false, RoomAssignment::getStatus,
                 (assignment, value) -> assignment.setStatus((RoomAssignmentStatus) value)),
         ;
@@ -115,11 +104,9 @@ public class RoomAssignment extends Persistent<Long> {
         // for ORM
     }
 
-    public RoomAssignment(Customer owner, Room room, Tariff tariff, Payment payment, LocalDateTime completeDateTime) {
+    public RoomAssignment(Customer owner, Room room, LocalDateTime completeDateTime) {
         this.owner = owner;
         this.room = room;
-        this.tariff = tariff;
-        this.payment = payment;
         this.completeDateTime = completeDateTime;
         this.status = RoomAssignmentStatus.IN_PROGRESS;
     }
@@ -134,18 +121,6 @@ public class RoomAssignment extends Persistent<Long> {
 
     public Room getRoom() {
         return room;
-    }
-
-    public Payment getPayment() {
-        return payment;
-    }
-
-    public void setPayment(Payment payment) {
-        this.payment = payment;
-    }
-
-    public Tariff getTariff() {
-        return tariff;
     }
 
     public LocalDateTime getCompleteDateTime() {
