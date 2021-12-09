@@ -30,4 +30,15 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
+
+    <tag>
+        <name>crud-table</name>
+        <tag-class>by.mitso.berezkina.tag.CrudTable</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>crudTableModel</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
 </taglib>

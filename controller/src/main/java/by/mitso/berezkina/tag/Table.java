@@ -1,7 +1,6 @@
 package by.mitso.berezkina.tag;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -32,20 +31,11 @@ public class Table extends TagSupport {
             List<Column> columns = tableModel.getColumnList().getColumns();
             List<Persistent<?>> rows = tableModel.getElements();
             out.println(String.format("<h3>%s</h3>", tableModel.getTitle()));
-            String createAction = tableModel.getCreateAction();
-            if(createAction != null) {
-                out.println(String.format("<a href=\"%s\" class=\"btn btn-success\">Создать</a>", createAction));
-            }
             out.println("<table class=\"table table-striped\">");
             out.println("<thead>");
             out.println("<tr>");
             for(Column column : columns) {
                 out.println(String.format("<th scope=\"col\">%s</th>", StringUtils.capitalize(column.getCaption())));
-            }
-            String editAction = tableModel.getEditAction();
-            String deleteAction = tableModel.getDeleteAction();
-            if((editAction != null || deleteAction != null) && !rows.isEmpty() && rows.get(0) instanceof Persistent<?>) {
-                out.println("<th scope=\"col\">Действия</th>");
             }
             out.println("</tr>");
             out.println("</thead>");
@@ -54,21 +44,6 @@ public class Table extends TagSupport {
                 out.println("<tr>");
                 for(Column column : columns) {
                     out.println(String.format("<td>%s</td>", tableModel.getValueAt(row, column)));
-                }
-                if((editAction != null || deleteAction != null)) {
-                    Serializable id = row.getId();
-                    if(id != null) {
-                        out.println("<td>");
-                        out.println("<div class=\"btn-group\">");
-                        if(editAction != null) {
-                            out.println(String.format("<a href=\"%s?id=%s\" class=\"btn btn-primary btn-sm\">Редактировать</a>", editAction, id));
-                        }
-                        if(deleteAction != null) {
-                            out.println(String.format("<a href=\"%s?id=%s\" class=\"btn btn-danger btn-sm\">Удалить</a>", deleteAction, id));
-                        }
-                        out.println("</div>");
-                        out.println("</td>");
-                    }
                 }
                 out.println("</tr>");
             }

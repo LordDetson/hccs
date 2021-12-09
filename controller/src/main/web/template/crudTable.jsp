@@ -4,12 +4,12 @@
 <html>
 <head>
     <jsp:include page="${pageContext.request.contextPath}/bootstrap-5.1.3-dist/bootstrap-css-includer.jsp"/>
-    <title>${requestScope.tableModel.title}</title>
+    <title>${requestScope.crudTableModel.title}</title>
 </head>
 <body>
 <jsp:include page="${pageContext.request.contextPath}/header-includer.jsp"/>
 <div class="container">
-    <custom:table tableModel="${requestScope.tableModel}"/>
+    <custom:crud-table crudTableModel="${requestScope.crudTableModel}"/>
 </div>
 <jsp:include page="${pageContext.request.contextPath}/bootstrap-5.1.3-dist/bootstrap-css-includer.jsp"/>
 </body>

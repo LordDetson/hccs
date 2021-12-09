@@ -12,10 +12,6 @@ public abstract class TableModel<T extends Persistent<?>> extends AbstractTableM
     private final List<T> elements;
     private ColumnList columnList;
 
-    private String createAction;
-    private String editAction;
-    private String deleteAction;
-
     protected TableModel(String title, List<T> elements) {
         this.title = title;
         this.elements = elements;
@@ -63,28 +59,4 @@ public abstract class TableModel<T extends Persistent<?>> extends AbstractTableM
     }
 
     protected abstract ColumnList createColumnList();
-
-    public String getCreateAction() {
-        return createAction;
-    }
-
-    public void setCreateAction(String createAction) {
-        this.createAction = createAction;
-    }
-
-    public String getEditAction() {
-        return editAction;
-    }
-
-    public void setEditAction(String editAction) {
-        this.editAction = editAction;
-    }
-
-    public String getDeleteAction() {
-        return deleteAction;
-    }
-
-    public void setDeleteAction(String deleteAction) {
-        this.deleteAction = deleteAction;
-    }
 }

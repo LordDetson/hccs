@@ -24,7 +24,7 @@ import by.mitso.berezkina.field.InputField;
 import by.mitso.berezkina.form.InputFormModel;
 import by.mitso.berezkina.table.Column;
 import by.mitso.berezkina.table.ColumnList;
-import by.mitso.berezkina.table.TableModel;
+import by.mitso.berezkina.table.CrudTableModel;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -71,8 +71,8 @@ public class CustomerController extends BaseController {
             forwardStandardForm(req, resp, inputFormModel);
         }
         else if(isAction(req, GET_CUSTOMERS)) {
-            TableModel<Customer> tableModel = createCustomerTableModel();
-            forwardStandardTable(req, resp, tableModel);
+            CrudTableModel<Customer> tableModel = createCustomerTableModel();
+            forwardCrudTable(req, resp, tableModel);
         }
         else if(isAction(req, EDIT_CUSTOMER)) {
             Long id = Long.valueOf(req.getParameter(CustomerField.ID.getName()));
@@ -127,12 +127,12 @@ public class CustomerController extends BaseController {
         }
     }
 
-    private TableModel<Customer> createCustomerTableModel() {
+    private CrudTableModel<Customer> createCustomerTableModel() {
         List<Customer> customers = new ArrayList<>();
         for(Customer customer : customerRepository.findAll()) {
             customers.add(customer);
         }
-        TableModel<Customer> tableModel = new TableModel<>("Таблица клиентов", customers) {
+        CrudTableModel<Customer> tableModel = new CrudTableModel<>("Таблица клиентов", customers) {
 
             @Override
             protected ColumnList createColumnList() {

@@ -29,7 +29,7 @@ import by.mitso.berezkina.form.FormSubmitButton;
 import by.mitso.berezkina.form.InputFormModel;
 import by.mitso.berezkina.table.Column;
 import by.mitso.berezkina.table.ColumnList;
-import by.mitso.berezkina.table.TableModel;
+import by.mitso.berezkina.table.CrudTableModel;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -77,8 +77,8 @@ public class RoomController extends BaseController {
             forwardStandardForm(req, resp, inputFormModel);
         }
         else if(isRoomTypeShow(req)) {
-            TableModel<RoomType> tableModel = createRoomTypeTableModel();
-            forwardStandardTable(req, resp, tableModel);
+            CrudTableModel<RoomType> tableModel = createRoomTypeTableModel();
+            forwardCrudTable(req, resp, tableModel);
         }
         else if(isRoomTypeEditing(req)) {
             Integer id = Integer.valueOf(req.getParameter(RoomTypeField.ID.getName()));
@@ -119,8 +119,8 @@ public class RoomController extends BaseController {
             forwardStandardForm(req, resp, inputFormModel);
         }
         else if(isRoomShow(req)) {
-            TableModel<Room> tableModel = createRoomTableModel();
-            forwardStandardTable(req, resp, tableModel);
+            CrudTableModel<Room> tableModel = createRoomTableModel();
+            forwardCrudTable(req, resp, tableModel);
         }
         else if(isRoomEditing(req)) {
             Integer id = Integer.valueOf(req.getParameter(RoomField.ID.getName()));
@@ -278,14 +278,14 @@ public class RoomController extends BaseController {
         return isAction(req, DELETE_ROOM);
     }
 
-    private TableModel<RoomType> createRoomTypeTableModel() {
+    private CrudTableModel<RoomType> createRoomTypeTableModel() {
         String title = "Таблица типов комнат";
         Iterator<RoomType> iterator = roomTypeRepository.findAll().iterator();
         List<RoomType> roomTypes = new ArrayList<>();
         while(iterator.hasNext()) {
             roomTypes.add(iterator.next());
         }
-        TableModel<RoomType> tableModel = new TableModel<>(title, roomTypes) {
+        CrudTableModel<RoomType> tableModel = new CrudTableModel<>(title, roomTypes) {
 
             @Override
             protected ColumnList createColumnList() {
@@ -306,14 +306,14 @@ public class RoomController extends BaseController {
         return tableModel;
     }
 
-    private TableModel<Room> createRoomTableModel() {
+    private CrudTableModel<Room> createRoomTableModel() {
         String title = "Таблица комнат";
         Iterator<Room> iterator = roomRepository.findAll().iterator();
         List<Room> rooms = new ArrayList<>();
         while(iterator.hasNext()) {
             rooms.add(iterator.next());
         }
-        TableModel<Room> tableModel = new TableModel<>(title, rooms) {
+        CrudTableModel<Room> crudTableModel = new CrudTableModel<>(title, rooms) {
 
             @Override
             protected ColumnList createColumnList() {
@@ -338,9 +338,9 @@ public class RoomController extends BaseController {
                 return super.getValueAt(element, column);
             }
         };
-        tableModel.setCreateAction(ADD_ROOM);
-        tableModel.setEditAction(EDIT_ROOM);
-        tableModel.setDeleteAction(DELETE_ROOM);
-        return tableModel;
+        crudTableModel.setCreateAction(ADD_ROOM);
+        crudTableModel.setEditAction(EDIT_ROOM);
+        crudTableModel.setDeleteAction(DELETE_ROOM);
+        return crudTableModel;
     }
 }
