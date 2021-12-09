@@ -1,16 +1,14 @@
 package by.mitso.berezkina.domain;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import by.mitso.berezkina.domain.exception.DomainChecker;
@@ -30,20 +28,27 @@ public class RoomAssignment extends Persistent<Long> {
     @JoinColumn(name = "room_id", nullable = false)
     private Room room;
 
-    @Column(name = "complete_date_time")
-    private LocalDateTime completeDateTime;
+    @Column(name = "start_date")
+    private LocalDate startDate;
+
+    @Column(name = "complete_date")
+    private LocalDate completeDate;
 
     @Column(name = "status", nullable = false)
     private RoomAssignmentStatus status;
 
     public enum RoomAssignmentField implements Field {
+        ID("id", "ID", Long.class, false, RoomAssignment::getId,
+                (assignment, value) -> assignment.setId((Long) value)),
         OWNER("owner", "владелец", Customer.class, true, RoomAssignment::getOwner,
                 null),
         ADDITIONAL_PERSONS("additionalPersons", "дополнительные жильцы", Integer.class, false, RoomAssignment::getAdditionalPersons,
-                null),
+                (assignment, value) -> assignment.setAdditionalPersons((Integer) value)),
         ROOMS("room", "назначенная комната", Room.class, true, RoomAssignment::getRoom,
                 null),
-        COMPLETE_DATE_TIME("completeDateTime", "дата и время завершения", LocalDateTime.class, true, RoomAssignment::getCompleteDateTime,
+        START_DATE_TIME("startDateTime", "дата начала", LocalDate.class, true, RoomAssignment::getCompleteDate,
+                null),
+        COMPLETE_DATE_TIME("completeDateTime", "дата завершения", LocalDate.class, true, RoomAssignment::getCompleteDate,
                 null),
         STATUS("status", "статус", RoomAssignmentStatus.class, false, RoomAssignment::getStatus,
                 (assignment, value) -> assignment.setStatus((RoomAssignmentStatus) value)),
@@ -104,11 +109,13 @@ public class RoomAssignment extends Persistent<Long> {
         // for ORM
     }
 
-    public RoomAssignment(Customer owner, Room room, LocalDateTime completeDateTime) {
+    public RoomAssignment(Customer owner, Room room, LocalDate startDate, LocalDate completeDate) {
         this.owner = owner;
         this.room = room;
-        this.completeDateTime = completeDateTime;
-        this.status = RoomAssignmentStatus.IN_PROGRESS;
+        this.startDate = startDate;
+        this.completeDate = completeDate;
+        LocalDate now = LocalDate.now();
+        this.status = startDate.equals(now) ? RoomAssignmentStatus.IN_PROGRESS : RoomAssignmentStatus.BOOKED;
     }
 
     public Customer getOwner() {
@@ -119,12 +126,20 @@ public class RoomAssignment extends Persistent<Long> {
         return additionalPersons;
     }
 
+    public void setAdditionalPersons(Integer additionalPersons) {
+        this.additionalPersons = additionalPersons;
+    }
+
     public Room getRoom() {
         return room;
     }
 
-    public LocalDateTime getCompleteDateTime() {
-        return completeDateTime;
+    public LocalDate getStartDate() {
+        return startDate;
+    }
+
+    public LocalDate getCompleteDate() {
+        return completeDate;
     }
 
     public RoomAssignmentStatus getStatus() {

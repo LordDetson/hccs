@@ -38,8 +38,6 @@ public class CustomerController extends BaseController {
     private static final String EDIT_CUSTOMER = "/customer/edit";
     private static final String DELETE_CUSTOMER = "/customer/delete";
 
-    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-
     private static final Field GENDERS_FIELD = new DynamicField(CustomerField.GENDER.getName(), CustomerField.GENDER.getCaption(),
             Set.class, true, null, null);
     private static final Factory<Customer> CUSTOMER_FACTORY = CustomerFactory.getInstance();
@@ -154,9 +152,6 @@ public class CustomerController extends BaseController {
                 Field field = column.getField();
                 if(field == CustomerField.GENDER) {
                     return customer.getGender().getShortName();
-                }
-                else if(field == CustomerField.BIRTHDAY) {
-                    return customer.getBirthday().format(DATE_TIME_FORMATTER);
                 }
                 return super.getValueAt(customer, column);
             }

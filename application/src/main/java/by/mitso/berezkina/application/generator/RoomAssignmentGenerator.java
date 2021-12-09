@@ -1,6 +1,6 @@
 package by.mitso.berezkina.application.generator;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import by.mitso.berezkina.application.repository.CrudRepository;
 import by.mitso.berezkina.domain.Customer;
@@ -24,7 +24,9 @@ public class RoomAssignmentGenerator implements Generator {
     public void generate() {
         Customer nastya = customerGenerator.getNastya();
         Room doubleRoom = roomGenerator.getDoubleRoom();
-        RoomAssignment assignment = new RoomAssignment(nastya, doubleRoom, LocalDateTime.now().plusDays(20));
+        LocalDate now = LocalDate.now();
+        RoomAssignment assignment = new RoomAssignment(nastya, doubleRoom, now, now.plusDays(20));
+        assignment.setAdditionalPersons(1);
         roomAssignmentRepository.save(assignment);
     }
 }

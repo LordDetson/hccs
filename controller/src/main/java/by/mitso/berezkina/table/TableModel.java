@@ -1,5 +1,7 @@
 package by.mitso.berezkina.table;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
@@ -7,6 +9,8 @@ import javax.swing.table.AbstractTableModel;
 import by.mitso.berezkina.domain.Persistent;
 
 public abstract class TableModel<T extends Persistent<?>> extends AbstractTableModel {
+
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
     private final String title;
     private final List<T> elements;
@@ -42,7 +46,11 @@ public abstract class TableModel<T extends Persistent<?>> extends AbstractTableM
     }
 
     public Object getValueAt(T element, Column column) {
-        return column.getData(element);
+        Object data = column.getData(element);
+        if(data instanceof LocalDate) {
+            data = ((LocalDate) data).format(DATE_FORMATTER);
+        }
+        return data;
     }
 
     public final ColumnList getColumnList() {

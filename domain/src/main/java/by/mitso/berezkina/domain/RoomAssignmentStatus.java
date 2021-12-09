@@ -1,10 +1,11 @@
 package by.mitso.berezkina.domain;
 
 public enum RoomAssignmentStatus {
-    BOOKED("booked", "забронирован"),
+    BOOKED("booked", "забронировано"),
     IN_PROGRESS("in progress", "активно"),
-    OVERDUE("overdue", "просроченый"),
+    OVERDUE("overdue", "просрочено"),
     COMPLETED("completed", "завершено"),
+    CANCELED("canceled", "отменено"),
     ;
 
     private final String name;
