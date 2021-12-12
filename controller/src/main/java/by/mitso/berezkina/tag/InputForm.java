@@ -86,6 +86,9 @@ public class InputForm extends TagSupport {
                 if((selectedValue != null && selectedValue.equals(value)) || (selectedValue == null && field.isRequired() && counter == 0)) {
                     out.print(" checked");
                 }
+                if(field.isReadonly()) {
+                    out.print(" disabled");
+                }
                 out.println(">");
                 out.println(String.format("<label for=\"%s\" class=\"form-check-label\">%s</label>", radioId, value));
                 out.println("</div>");

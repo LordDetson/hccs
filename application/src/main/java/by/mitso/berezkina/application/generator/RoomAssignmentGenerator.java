@@ -26,7 +26,7 @@ public class RoomAssignmentGenerator implements Generator {
         Room doubleRoom = roomGenerator.getDoubleRoom();
         LocalDate now = LocalDate.now();
         RoomAssignment assignment = new RoomAssignment(nastya, doubleRoom, now, now.plusDays(20));
-        assignment.setAdditionalPersons(1);
+        assignment.setAdditionalPersons((byte) 1);
         roomAssignmentRepository.save(assignment);
     }
 }

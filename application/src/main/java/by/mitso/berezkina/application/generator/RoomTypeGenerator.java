@@ -25,7 +25,7 @@ public class RoomTypeGenerator implements Generator {
         singleType = new RoomType("Single", (byte) 1, (byte) 1, (byte) 1, (byte) 1);
         singleType.setDescription("Однокомнатный, для размещения одного отдыхающего. Спальное место одно.");
 
-        doubleType = new RoomType("Double ", (byte) 1, (byte) 2, (byte) 1, (byte) 2);
+        doubleType = new RoomType("Double", (byte) 1, (byte) 2, (byte) 1, (byte) 2);
         doubleType.setDescription("Однокомнатный номер для двоих. Может быть с одной большой кроватью или с двумя раздельными кроватями (double twin).");
 
         tripleType = new RoomType("Triple", (byte) 2, (byte) 3, (byte) 2, (byte) 3);

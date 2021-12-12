@@ -8,12 +8,15 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
+
 import by.mitso.berezkina.converter.Converter;
 import by.mitso.berezkina.converter.FieldConverter;
 import by.mitso.berezkina.domain.Customer.CustomerField;
 import by.mitso.berezkina.domain.Field;
 import by.mitso.berezkina.domain.Gender;
 import by.mitso.berezkina.domain.Room.RoomField;
+import by.mitso.berezkina.domain.RoomAssignment.RoomAssignmentField;
 import by.mitso.berezkina.domain.RoomType.RoomTypeField;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -72,6 +75,16 @@ public class FieldUtil {
         return FieldUtil.convertToInputFields(orderedFields);
     }
 
+    public static Set<InputField> getAssignmentOrderedInputFields() {
+        Set<RoomAssignmentField> orderedFields = new LinkedHashSet<>();
+        orderedFields.add(RoomAssignmentField.OWNER);
+        orderedFields.add(RoomAssignmentField.ADDITIONAL_PERSONS);
+        orderedFields.add(RoomAssignmentField.ROOM);
+        orderedFields.add(RoomAssignmentField.START_DATE);
+        orderedFields.add(RoomAssignmentField.COMPLETE_DATE);
+        return FieldUtil.convertToInputFields(orderedFields);
+    }
+
     public static Map<Field, Object> createFieldValueMap(Set<? extends Field> fields, HttpServletRequest req) {
         Map<Field, Object> fieldValueMap = new HashMap<>();
         Enumeration<String> parameterNames = req.getParameterNames();
@@ -85,6 +98,10 @@ public class FieldUtil {
     }
 
     private static Object mapStringToCorrectType(Field field, String value) {
+        value = StringUtils.trimToNull(value);
+        if(value == null) {
+            return null;
+        }
         Class<?> type = field.getType();
         if(type.isAssignableFrom(Byte.class)) {
             return Byte.valueOf(value);

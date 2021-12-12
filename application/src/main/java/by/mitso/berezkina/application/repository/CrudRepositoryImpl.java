@@ -2,6 +2,7 @@ package by.mitso.berezkina.application.repository;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -78,6 +79,8 @@ public class CrudRepositoryImpl<T extends Persistent<ID>, ID extends Serializabl
         CriteriaBuilder qb = entityManager.getCriteriaBuilder();
         CriteriaQuery<T> cq = qb.createQuery(entityType);
         cq.select(cq.from(entityType));
+        List<T> found = entityManager.createQuery(cq).getResultList();
+        found.forEach(this::refresh);
         return entityManager.createQuery(cq).getResultList();
     }
 
@@ -87,21 +90,37 @@ public class CrudRepositoryImpl<T extends Persistent<ID>, ID extends Serializabl
         for(ID id : ids) {
             findById(id).ifPresent(entities::add);
         }
+        entities.forEach(this::refresh);
         return entities;
     }
 
     @Override
     public Optional<T> findById(ID id) {
-        return Optional.ofNullable(entityManager.find(entityType, id));
+        Optional<T> found = Optional.ofNullable(entityManager.find(entityType, id));
+        found.ifPresent(this::refresh);
+        return found;
     }
 
     @Override
-    public Optional<T> findByField(Field field, Object value) {
+    public Iterable<T> findAllByField(Field field, Object value) {
         CriteriaBuilder qb = entityManager.getCriteriaBuilder();
         CriteriaQuery<T> cq = qb.createQuery(entityType);
         Root<T> root = cq.from(entityType);
         cq.select(root).where(qb.equal(root.get(field.getName()), value));
-        return Optional.ofNullable(entityManager.createQuery(cq).getSingleResult());
+        List<T> found = entityManager.createQuery(cq).getResultList();
+        found.forEach(this::refresh);
+        return found;
+    }
+
+    @Override
+    public Optional<T> findByField(Field field, Object value) {
+        Iterator<T> iterator = findAllByField(field, value).iterator();
+        if(iterator.hasNext()) {
+            T first = iterator.next();
+            refresh(first);
+            return Optional.of(first);
+        }
+        return Optional.empty();
     }
 
     @Override
@@ -136,5 +155,10 @@ public class CrudRepositoryImpl<T extends Persistent<ID>, ID extends Serializabl
         }
         entityManager.getTransaction().commit();
         return entities;
+    }
+
+    @Override
+    public <S extends T> void refresh(S entity) {
+        entityManager.refresh(entity);
     }
 }

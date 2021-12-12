@@ -85,6 +85,10 @@ public class InputField {
         this.values = values;
     }
 
+    public void setValue(String values) {
+        setValues(Collections.singleton(values));
+    }
+
     public String getSelectedValue() {
         return selectedValue;
     }

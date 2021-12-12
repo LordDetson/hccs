@@ -24,7 +24,7 @@ public class Room extends Persistent<Integer> {
     @Column(name = "number", nullable = false, unique = true)
     private String number;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "room_type_id", nullable = false)
     private RoomType roomType;
 

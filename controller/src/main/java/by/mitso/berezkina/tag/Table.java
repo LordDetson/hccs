@@ -43,7 +43,8 @@ public class Table extends TagSupport {
             for(Persistent<?> row : rows) {
                 out.println("<tr>");
                 for(Column column : columns) {
-                    out.println(String.format("<td>%s</td>", tableModel.getValueAt(row, column)));
+                    Object value = tableModel.getValueAt(row, column);
+                    out.println(String.format("<td>%s</td>", value != null ? value : ""));
                 }
                 out.println("</tr>");
             }

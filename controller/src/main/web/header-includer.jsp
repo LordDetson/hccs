@@ -2,7 +2,7 @@
 <header class="mb-3">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">HCCS</a>
+            <a class="navbar-brand" href="${pageContext.request.contextPath}/">HCCS</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="Toggle navigation">
@@ -18,6 +18,12 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="${pageContext.request.contextPath}/customers">Клиенты</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="${pageContext.request.contextPath}/room/assignments">Назначения</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="${pageContext.request.contextPath}/customer/select">Поселить</a>
                     </li>
                     <%--<li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="#">Home</a>

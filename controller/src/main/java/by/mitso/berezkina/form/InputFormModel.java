@@ -29,10 +29,6 @@ public class InputFormModel {
         }
     }
 
-    public InputFormModel(String name, String action, Set<InputField> inputFields, String submitText) {
-        this(null, name, action, inputFields, submitText);
-    }
-
     public InputFormModel(String title, String name, String action, Set<InputField> inputFields, String submitText) {
         this.title = title;
         this.name = name;

@@ -28,6 +28,10 @@ public class SelectionTable extends TagSupport {
     public int doStartTag() throws JspException {
         JspWriter out = pageContext.getOut();
         try {
+            if(selectionTableModel.isEmpty()) {
+                out.println("<h3>Таблица пустая</h3>");
+                return SKIP_BODY;
+            }
             List<Column> columns = selectionTableModel.getColumnList().getColumns();
             List<Persistent<?>> rows = selectionTableModel.getElements();
             out.println(String.format("<h3>%s</h3>", selectionTableModel.getTitle()));
@@ -46,18 +50,24 @@ public class SelectionTable extends TagSupport {
             out.println("<tbody>");
             int counter = 0;
             for(Persistent<?> row : rows) {
-                String inputId = selectionTableModel.getName() + "_" + counter++;
+                String inputId = selectionTableModel.getName() + "_" + counter;
                 out.println("<tr>");
                 out.println("<td>");
                 out.println("<div class=\"form-check\">");
-                out.println(String.format("<input type=\"%s\" id=\"%s\" name=\"selections\" value=\"%s\" class=\"form-check-input\">",
+                out.print(String.format("<input type=\"%s\" id=\"%s\" name=\"selections\" value=\"%s\" class=\"form-check-input\"",
                         selectionTableModel.getType().getName(), inputId, row.getId()));
+                if(counter == 0) {
+                    out.print(" checked");
+                }
+                out.println(">");
                 out.println("</div>");
                 out.println("</td>");
                 for(Column column : columns) {
-                    out.println(String.format("<td>%s</td>", selectionTableModel.getValueAt(row, column)));
+                    Object value = selectionTableModel.getValueAt(row, column);
+                    out.println(String.format("<td>%s</td>", value != null ? value : ""));
                 }
                 out.println("</tr>");
+                counter++;
             }
             out.println("</tbody>");
             out.println("</table>");

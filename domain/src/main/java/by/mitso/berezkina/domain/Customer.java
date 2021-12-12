@@ -43,7 +43,7 @@ public class Customer extends Persistent<Long> {
     @Column(name = "gender", nullable = false)
     private Gender gender;
 
-    @OneToMany(mappedBy="owner", fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy="owner", fetch = FetchType.EAGER, cascade = CascadeType.PERSIST, orphanRemoval = true)
     private Set<RoomAssignment> assignments;
 
     public enum CustomerField implements Field {
@@ -53,6 +53,8 @@ public class Customer extends Persistent<Long> {
                 (customer, value) -> customer.setFirstName((String) value)),
         LAST_NAME("lastName", "фамилия", String.class, true, Customer::getLastName,
                 (customer, value) -> customer.setLastName((String) value)),
+        FULL_NAME("fullName", "клиент", String.class, false, Customer::getFullName,
+                null),
         PASSPORT_ID("passportId", "номер паспорта", String.class, true, Customer::getPassportId,
                 (customer, value) -> customer.setPassportId((String) value)),
         IDENTIFIER_NUMBER("identifierNumber", "идентификационный номер", String.class, true, Customer::getIdentifierNumber,
@@ -160,6 +162,10 @@ public class Customer extends Persistent<Long> {
     public void setLastName(String lastName) {
         DomainChecker.checkNotNull(lastName, CustomerField.LAST_NAME.getName());
         this.lastName = lastName;
+    }
+
+    public String getFullName() {
+        return firstName + " " + lastName;
     }
 
     public String getPassportId() {

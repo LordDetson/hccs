@@ -1,7 +1,6 @@
 package by.mitso.berezkina.controller;
 
 import java.io.IOException;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashSet;
@@ -21,6 +20,7 @@ import by.mitso.berezkina.factor.Factory;
 import by.mitso.berezkina.field.DynamicField;
 import by.mitso.berezkina.field.FieldUtil;
 import by.mitso.berezkina.field.InputField;
+import by.mitso.berezkina.form.FormSubmitButton;
 import by.mitso.berezkina.form.InputFormModel;
 import by.mitso.berezkina.table.Column;
 import by.mitso.berezkina.table.ColumnList;
@@ -37,6 +37,8 @@ public class CustomerController extends BaseController {
     private static final String GET_CUSTOMERS = "/customers";
     private static final String EDIT_CUSTOMER = "/customer/edit";
     private static final String DELETE_CUSTOMER = "/customer/delete";
+
+    private static final String PLACE_IN_ROOM_PARAMETER = "placeInRoom";
 
     private static final Field GENDERS_FIELD = new DynamicField(CustomerField.GENDER.getName(), CustomerField.GENDER.getCaption(),
             Set.class, true, null, null);
@@ -60,12 +62,20 @@ public class CustomerController extends BaseController {
             }
             gendersField.setValues(genderNames);
             inputFields.add(gendersField);
+            CustomerField identifierNumberField = CustomerField.IDENTIFIER_NUMBER;
+            if(req.getParameterMap().containsKey(identifierNumberField.getName())) {
+                inputFields.stream()
+                        .filter(inputField -> inputField.getField().getName().equals(identifierNumberField.getName()))
+                        .findFirst().ifPresent(inputField -> inputField.setValue(req.getParameter(identifierNumberField.getName())));
+            }
             InputFormModel inputFormModel = new InputFormModel(
                     "Форма клиента",
                     "createCustomer",
                     ADD_CUSTOMER,
                     inputFields,
                     "Создать");
+            FormSubmitButton placeInRoom = new FormSubmitButton("Поселить", ADD_CUSTOMER + "?" + PLACE_IN_ROOM_PARAMETER);
+            inputFormModel.getSubmitButtons().add(placeInRoom);
             forwardStandardForm(req, resp, inputFormModel);
         }
         else if(isAction(req, GET_CUSTOMERS)) {
@@ -110,8 +120,14 @@ public class CustomerController extends BaseController {
         if(isAction(req, ADD_CUSTOMER)) {
             Map<Field, Object> fieldValueMap = FieldUtil.createFieldValueMap(Customer.getAllFields(), req);
             Customer customer = CUSTOMER_FACTORY.factor(fieldValueMap);
-            customerRepository.save(customer);
-            resp.sendRedirect(GET_CUSTOMERS);
+            Customer saved = customerRepository.save(customer);
+            if(req.getParameterMap().containsKey(PLACE_IN_ROOM_PARAMETER)) {
+                req.getSession().setAttribute(AssignmentController.SELECTED_CUSTOMER_ATTRIBUTE, saved);
+                resp.sendRedirect(AssignmentController.SELECT_ROOM);
+            }
+            else {
+                resp.sendRedirect(GET_CUSTOMERS);
+            }
         }
         else if(isAction(req, EDIT_CUSTOMER)) {
             Long id = Long.valueOf(req.getParameter(CustomerField.ID.getName()));
@@ -136,8 +152,7 @@ public class CustomerController extends BaseController {
             protected ColumnList createColumnList() {
                 ColumnList list = new ColumnList();
                 list.add(CustomerField.ID).setCaption("#");
-                list.add(CustomerField.FIRST_NAME);
-                list.add(CustomerField.LAST_NAME);
+                list.add(CustomerField.FULL_NAME);
                 list.add(CustomerField.PASSPORT_ID);
                 list.add(CustomerField.IDENTIFIER_NUMBER);
                 list.add(CustomerField.COUNTRY);

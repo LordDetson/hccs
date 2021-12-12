@@ -67,4 +67,8 @@ public abstract class TableModel<T extends Persistent<?>> extends AbstractTableM
     }
 
     protected abstract ColumnList createColumnList();
+
+    public boolean isEmpty() {
+        return elements.isEmpty();
+    }
 }

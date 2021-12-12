@@ -22,7 +22,7 @@ public class RoomAssignment extends Persistent<Long> {
     private Customer owner;
 
     @Column(name = "additional_persons")
-    private Integer additionalPersons;
+    private Byte additionalPersons;
 
     @ManyToOne
     @JoinColumn(name = "room_id", nullable = false)
@@ -42,13 +42,13 @@ public class RoomAssignment extends Persistent<Long> {
                 (assignment, value) -> assignment.setId((Long) value)),
         OWNER("owner", "владелец", Customer.class, true, RoomAssignment::getOwner,
                 null),
-        ADDITIONAL_PERSONS("additionalPersons", "дополнительные жильцы", Integer.class, false, RoomAssignment::getAdditionalPersons,
-                (assignment, value) -> assignment.setAdditionalPersons((Integer) value)),
-        ROOMS("room", "назначенная комната", Room.class, true, RoomAssignment::getRoom,
+        ADDITIONAL_PERSONS("additionalPersons", "дополнительные жильцы", Byte.class, false, RoomAssignment::getAdditionalPersons,
+                (assignment, value) -> assignment.setAdditionalPersons((Byte) value)),
+        ROOM("room", "назначенная комната", Room.class, true, RoomAssignment::getRoom,
                 null),
-        START_DATE_TIME("startDateTime", "дата начала", LocalDate.class, true, RoomAssignment::getCompleteDate,
+        START_DATE("startDate", "дата начала", LocalDate.class, true, RoomAssignment::getStartDate,
                 null),
-        COMPLETE_DATE_TIME("completeDateTime", "дата завершения", LocalDate.class, true, RoomAssignment::getCompleteDate,
+        COMPLETE_DATE("completeDate", "дата завершения", LocalDate.class, true, RoomAssignment::getCompleteDate,
                 null),
         STATUS("status", "статус", RoomAssignmentStatus.class, false, RoomAssignment::getStatus,
                 (assignment, value) -> assignment.setStatus((RoomAssignmentStatus) value)),
@@ -122,12 +122,12 @@ public class RoomAssignment extends Persistent<Long> {
         return owner;
     }
 
-    public Integer getAdditionalPersons() {
+    public Byte getAdditionalPersons() {
         return additionalPersons;
     }
 
-    public void setAdditionalPersons(Integer additionalPersons) {
-        this.additionalPersons = additionalPersons;
+    public void setAdditionalPersons(Byte additionalPersons) {
+        this.additionalPersons = additionalPersons == null ? 0 : additionalPersons;
     }
 
     public Room getRoom() {

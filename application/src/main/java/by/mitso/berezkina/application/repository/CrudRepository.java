@@ -28,9 +28,13 @@ public interface CrudRepository<T extends Persistent<ID>, ID extends Serializabl
 
     Optional<T> findById(ID id);
 
+    Iterable<T> findAllByField(Field field, Object value);
+
     Optional<T> findByField(Field field, Object value);
 
     <S extends T> S save(S entity);
 
     <S extends T> Iterable<S> saveAll(Iterable<S> entities);
+
+    <S extends T> void refresh(S entity);
 }

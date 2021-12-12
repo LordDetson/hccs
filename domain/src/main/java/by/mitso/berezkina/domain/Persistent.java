@@ -35,7 +35,12 @@ public abstract class Persistent<ID extends Serializable> {
 
     public void setFieldValue(Field field, Object value) {
         Object oldValue = getFieldValue(field);
-        if(!oldValue.equals(value)) {
+        if(oldValue == null) {
+            if(value != null) {
+                field.setValue(this, value);
+            }
+        }
+        else if(!oldValue.equals(value)) {
             field.setValue(this, value);
         }
     }
