@@ -3,7 +3,7 @@
 <html>
 <head>
     <jsp:include page="${pageContext.request.contextPath}/bootstrap-5.1.3-dist/bootstrap-css-includer.jsp"/>
-    <title>Index</title>
+    <title>Стартовая страница</title>
 </head>
 <body>
 <jsp:include page="${pageContext.request.contextPath}/header-includer.jsp"/>
