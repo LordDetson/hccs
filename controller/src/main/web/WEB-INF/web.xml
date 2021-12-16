@@ -14,11 +14,12 @@
         <auth-method>FORM</auth-method>
         <form-login-config>
             <form-login-page>/login.jsp</form-login-page>
+            <form-error-page>/login.jsp</form-error-page>
         </form-login-config>
     </login-config>
     <security-constraint>
-        <!--<web-resource-collection>
-            <web-resource-name>rooms</web-resource-name>
+        <web-resource-collection>
+            <web-resource-name>view</web-resource-name>
             <url-pattern>/index.jsp</url-pattern>
         </web-resource-collection>
         <web-resource-collection>
@@ -30,7 +31,7 @@
             <web-resource-name>customers</web-resource-name>
             <url-pattern>/customers/*</url-pattern>
             <url-pattern>/customer/*</url-pattern>
-        </web-resource-collection>-->
+        </web-resource-collection>
         <auth-constraint>
             <role-name>administrator</role-name>
             <role-name>user</role-name>
@@ -44,14 +45,15 @@
         <role-name>user</role-name>
     </security-role>
 
-    <listener>
-        <listener-class>by.mitso.berezkina.listener.HibernateSessionFactoryListener</listener-class>
-    </listener>
-
     <jsp-config>
         <taglib>
             <taglib-uri>http://berezkina.mitso.by/custom-taglib</taglib-uri>
             <taglib-location>/WEB-INF/custom-taglib.tld</taglib-location>
         </taglib>
     </jsp-config>
+
+    <error-page>
+        <error-code>403</error-code>
+        <location>/view/error/error403.jsp</location>
+    </error-page>
 </web-app>

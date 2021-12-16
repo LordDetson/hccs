@@ -8,7 +8,7 @@
 </head>
 <body>
 <div id="login-form">
-    <form class="d-grid form-sigin" action="j_security_check" method="post">
+    <form class="d-grid form-sigin" action="/j_security_check" method="post">
         <h1 class="h3 mb-3 font-weight-normal" style="text-align: center">Форма входа</h1>
         <div class="form-floating">
             <input type="text" id="userName" name="j_username" class="form-control" placeholder="Имя пользователя" required autofocus>

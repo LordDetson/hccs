@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import by.mitso.berezkina.access.AccessChecker;
 import by.mitso.berezkina.application.repository.CrudRepository;
 import by.mitso.berezkina.application.repository.CrudRepositoryImpl;
 import by.mitso.berezkina.domain.Customer;
@@ -79,7 +80,7 @@ public class CustomerController extends BaseController {
             forwardStandardForm(req, resp, inputFormModel);
         }
         else if(isAction(req, GET_CUSTOMERS)) {
-            CrudTableModel<Customer> tableModel = createCustomerTableModel();
+            CrudTableModel<Customer> tableModel = createCustomerTableModel(req);
             forwardCrudTable(req, resp, tableModel);
         }
         else if(isAction(req, EDIT_CUSTOMER)) {
@@ -141,7 +142,7 @@ public class CustomerController extends BaseController {
         }
     }
 
-    private CrudTableModel<Customer> createCustomerTableModel() {
+    private CrudTableModel<Customer> createCustomerTableModel(HttpServletRequest req) {
         List<Customer> customers = new ArrayList<>();
         for(Customer customer : customerRepository.findAll()) {
             customers.add(customer);
@@ -174,6 +175,7 @@ public class CustomerController extends BaseController {
         tableModel.setCreateAction(ADD_CUSTOMER);
         tableModel.setEditAction(EDIT_CUSTOMER);
         tableModel.setDeleteAction(DELETE_CUSTOMER);
+        tableModel.setCanDelete(customer -> AccessChecker.isAdministrator(req));
         return tableModel;
     }
 }

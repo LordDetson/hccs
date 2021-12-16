@@ -12,6 +12,7 @@ import java.util.Set;
 
 import org.hibernate.SessionFactory;
 
+import by.mitso.berezkina.access.AccessChecker;
 import by.mitso.berezkina.application.repository.CrudRepository;
 import by.mitso.berezkina.application.repository.CrudRepositoryImpl;
 import by.mitso.berezkina.domain.Field;
@@ -38,17 +39,17 @@ import jakarta.servlet.http.HttpServletResponse;
 @WebServlet(name = "RoomController", urlPatterns = { "/rooms/*", "/room/*" })
 public class RoomController extends BaseController {
 
-    private static final String ADD_ROOM_TYPE = "/room/type/add";
+    public static final String ADD_ROOM_TYPE = "/room/type/add";
     private static final String GET_ROOM_TYPES = "/rooms/types";
-    private static final String EDIT_ROOM_TYPE = "/room/type/edit";
-    private static final String DELETE_ROOM_TYPE = "/room/type/delete";
+    public static final String EDIT_ROOM_TYPE = "/room/type/edit";
+    public static final String DELETE_ROOM_TYPE = "/room/type/delete";
 
-    private static final String ADD_ROOM = "/room/add";
+    public static final String ADD_ROOM = "/room/add";
     private static final String ADDITIONAL_ROOM_PARAMS_PARAMETER = "additionalRoomParams";
     private static final String GET_ROOMS = "/rooms";
-    private static final String EDIT_ROOM = "/room/edit";
+    public static final String EDIT_ROOM = "/room/edit";
     private static final String EDIT_ADDITIONAL_ROOM_PARAMS = "/room/edit/additional-params";
-    private static final String DELETE_ROOM = "/room/delete";
+    public static final String DELETE_ROOM = "/room/delete";
 
     private static final Field ROOM_TYPES_FIELD = new DynamicField(RoomField.ROOM_TYPE.getName(), "типы комнат", Set.class, true, null, null);
 
@@ -77,7 +78,7 @@ public class RoomController extends BaseController {
             forwardStandardForm(req, resp, inputFormModel);
         }
         else if(isRoomTypeShow(req)) {
-            CrudTableModel<RoomType> tableModel = createRoomTypeTableModel();
+            CrudTableModel<RoomType> tableModel = createRoomTypeTableModel(req);
             forwardCrudTable(req, resp, tableModel);
         }
         else if(isRoomTypeEditing(req)) {
@@ -119,7 +120,7 @@ public class RoomController extends BaseController {
             forwardStandardForm(req, resp, inputFormModel);
         }
         else if(isRoomShow(req)) {
-            CrudTableModel<Room> tableModel = createRoomTableModel();
+            CrudTableModel<Room> tableModel = createRoomTableModel(req);
             forwardCrudTable(req, resp, tableModel);
         }
         else if(isRoomEditing(req)) {
@@ -278,7 +279,7 @@ public class RoomController extends BaseController {
         return isAction(req, DELETE_ROOM);
     }
 
-    private CrudTableModel<RoomType> createRoomTypeTableModel() {
+    private CrudTableModel<RoomType> createRoomTypeTableModel(HttpServletRequest req) {
         String title = "Таблица типов комнат";
         Iterator<RoomType> iterator = roomTypeRepository.findAll().iterator();
         List<RoomType> roomTypes = new ArrayList<>();
@@ -303,10 +304,13 @@ public class RoomController extends BaseController {
         tableModel.setCreateAction(ADD_ROOM_TYPE);
         tableModel.setEditAction(EDIT_ROOM_TYPE);
         tableModel.setDeleteAction(DELETE_ROOM_TYPE);
+        tableModel.setCanCreate(AccessChecker.isAdministrator(req));
+        tableModel.setCanEdit(roomType -> AccessChecker.isAdministrator(req));
+        tableModel.setCanDelete(roomType -> AccessChecker.isAdministrator(req));
         return tableModel;
     }
 
-    private CrudTableModel<Room> createRoomTableModel() {
+    private CrudTableModel<Room> createRoomTableModel(HttpServletRequest req) {
         String title = "Таблица комнат";
         Iterator<Room> iterator = roomRepository.findAll().iterator();
         List<Room> rooms = new ArrayList<>();
@@ -332,8 +336,7 @@ public class RoomController extends BaseController {
             public Object getValueAt(Room element, Column column) {
                 Field field = column.getField();
                 if(field == RoomField.ROOM_TYPE) {
-                    String name = element.getRoomType().getName();
-                    return String.format("<a href=\"#\">%s</a>", name);
+                    return element.getRoomType().getName();
                 }
                 return super.getValueAt(element, column);
             }
@@ -341,6 +344,9 @@ public class RoomController extends BaseController {
         crudTableModel.setCreateAction(ADD_ROOM);
         crudTableModel.setEditAction(EDIT_ROOM);
         crudTableModel.setDeleteAction(DELETE_ROOM);
+        crudTableModel.setCanCreate(AccessChecker.isAdministrator(req));
+        crudTableModel.setCanEdit(roomType -> AccessChecker.isAdministrator(req));
+        crudTableModel.setCanDelete(roomType -> AccessChecker.isAdministrator(req));
         return crudTableModel;
     }
 }

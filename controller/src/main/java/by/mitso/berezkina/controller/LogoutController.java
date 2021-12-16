@@ -13,7 +13,7 @@ public class LogoutController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getSession().invalidate();
+        req.logout();
         resp.sendRedirect(req.getContextPath() + "/");
     }
 }
