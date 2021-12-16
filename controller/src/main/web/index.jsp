@@ -26,7 +26,7 @@
                 </a>
                 <a href="${pageContext.request.contextPath}/customers" class="list-group-item list-group-item-action">
                     <div class="fw-bold">Клиенты</div>
-                    Здесь вы можете посмотреть список клиентов когда либо зарегестрированных в гостинице.
+                    Здесь вы можете посмотреть список клиентов когда либо зарегистрированных в гостинице.
                 </a>
                 <a href="${pageContext.request.contextPath}/room/assignments" class="list-group-item list-group-item-action">
                     <div class="fw-bold">Назначения</div>
@@ -34,7 +34,7 @@
                 </a>
                 <a href="${pageContext.request.contextPath}/customer/select" class="list-group-item list-group-item-action">
                     <div class="fw-bold">Поселить</div>
-                    Здесь вы можнете быстро найти клиента и поселить в комнату, по его требованияю.
+                    Здесь вы можете быстро найти клиента и поселить в комнату, по его требованиям.
                 </a>
             </div>
         </div>
