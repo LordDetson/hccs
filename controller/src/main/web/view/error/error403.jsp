@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <jsp:include page="${pageContext.request.contextPath}/bootstrap-5.1.3-dist/bootstrap-css-includer.jsp"/>
+    <jsp:include page="/bootstrap-5.1.3-dist/bootstrap-css-includer.jsp"/>
     <title>Доступ закрыт</title>
 </head>
 <body>
@@ -17,6 +17,6 @@
         </div>
     </div>
 </div>
-<jsp:include page="${pageContext.request.contextPath}/bootstrap-5.1.3-dist/bootstrap-css-includer.jsp"/>
+<jsp:include page="/bootstrap-5.1.3-dist/bootstrap-js-includer.jsp"/>
 </body>
 </html>

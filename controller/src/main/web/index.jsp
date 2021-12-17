@@ -2,11 +2,11 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
 <head>
-    <jsp:include page="${pageContext.request.contextPath}/bootstrap-5.1.3-dist/bootstrap-css-includer.jsp"/>
+    <jsp:include page="/bootstrap-5.1.3-dist/bootstrap-css-includer.jsp"/>
     <title>Стартовая страница</title>
 </head>
 <body>
-<jsp:include page="${pageContext.request.contextPath}/header-includer.jsp"/>
+<jsp:include page="/header-includer.jsp"/>
 <div class="container">
     <div class="row mb-3">
         <div class="col">
@@ -40,6 +40,6 @@
         </div>
     </div>
 </div>
-<jsp:include page="${pageContext.request.contextPath}/bootstrap-5.1.3-dist/bootstrap-css-includer.jsp"/>
+<jsp:include page="/bootstrap-5.1.3-dist/bootstrap-js-includer.jsp"/>
 </body>
 </html>

@@ -89,7 +89,7 @@ public class AssignmentController extends BaseController {
             for(Customer customer : customerRepository.findAll()) {
                 customers.add(customer);
             }
-            SelectionTableModel<Customer> customerTableModel = createCustomerSelectionTableModel(customers);
+            SelectionTableModel<Customer> customerTableModel = createCustomerSelectionTableModel(req, customers);
             req.setAttribute("selectionTableModel", customerTableModel);
             getServletContext().getRequestDispatcher(SELECT_CUSTOMER_VIEW).forward(req, resp);
         }
@@ -128,11 +128,11 @@ public class AssignmentController extends BaseController {
             InputFormModel inputFormModel = new InputFormModel(
                     "Форма поиск комнат",
                     "searchRoom",
-                    SEARCH_ROOM,
+                    req.getContextPath() + SEARCH_ROOM,
                     inputFields,
                     "Искать"
             );
-            SelectionTableModel<Room> roomTableModel = createRoomSelectionTableModel(Collections.emptyList());
+            SelectionTableModel<Room> roomTableModel = createRoomSelectionTableModel(req, Collections.emptyList());
             req.setAttribute("inputFormModel", inputFormModel);
             req.setAttribute("selectionTableModel", roomTableModel);
             getServletContext().getRequestDispatcher(SELECT_ROOM_VIEW).forward(req, resp);
@@ -142,8 +142,7 @@ public class AssignmentController extends BaseController {
             for(RoomAssignment assignment : assignmentRepository.findAll()) {
                 assignments.add(assignment);
             }
-            CrudTableModel<RoomAssignment> crudTableModel = createAssignmentTableModel(
-                    assignments);
+            CrudTableModel<RoomAssignment> crudTableModel = createAssignmentTableModel(req, assignments);
             forwardCrudTable(req, resp, crudTableModel);
         }
         else if(isAction(req, EDIT_ASSIGNMENT)) {
@@ -184,7 +183,7 @@ public class AssignmentController extends BaseController {
                 InputFormModel inputFormModel = new InputFormModel(
                         "Форма назначения",
                         "edit",
-                        EDIT_ASSIGNMENT + "?id=" + id,
+                        req.getContextPath() + EDIT_ASSIGNMENT + "?id=" + id,
                         inputFields,
                         "Обновить");
                 forwardStandardForm(req, resp, inputFormModel);
@@ -198,7 +197,8 @@ public class AssignmentController extends BaseController {
             CustomerField identifierNumberField = CustomerField.IDENTIFIER_NUMBER;
             String identifierNumber = req.getParameter(identifierNumberField.getName());
             Optional<Customer> customer = customerRepository.findByField(identifierNumberField, identifierNumber);
-            SelectionTableModel<Customer> customerTableModel = createCustomerSelectionTableModel(customer.map(Collections::singletonList).orElse(Collections.emptyList()));
+            SelectionTableModel<Customer> customerTableModel = createCustomerSelectionTableModel(req,
+                    customer.map(Collections::singletonList).orElse(Collections.emptyList()));
             req.setAttribute(identifierNumberField.getName(), identifierNumber);
             req.setAttribute("selectionTableModel", customerTableModel);
             getServletContext().getRequestDispatcher(SELECT_CUSTOMER_VIEW).forward(req, resp);
@@ -209,7 +209,7 @@ public class AssignmentController extends BaseController {
                 Optional<Customer> selectedCustomer = customerRepository.findById(id);
                 selectedCustomer.ifPresent(customer -> req.getSession().setAttribute(SELECTED_CUSTOMER_ATTRIBUTE, customer));
             }
-            resp.sendRedirect(SELECT_ROOM);
+            resp.sendRedirect(req.getContextPath() + SELECT_ROOM);
         }
         else if(isAction(req, SEARCH_ROOM)) {
             Set<Field> fields = new LinkedHashSet<>();
@@ -244,12 +244,12 @@ public class AssignmentController extends BaseController {
             InputFormModel inputFormModel = new InputFormModel(
                     "Форма поиск комнат",
                     "searchRoom",
-                    SEARCH_ROOM,
+                    req.getContextPath() + SEARCH_ROOM,
                     inputFields,
                     "Искать"
             );
 
-            SelectionTableModel<Room> roomTableModel = createRoomSelectionTableModel(rooms);
+            SelectionTableModel<Room> roomTableModel = createRoomSelectionTableModel(req, rooms);
             HttpSession session = req.getSession();
             session.setAttribute(START_DATE_ATTRIBUTE, startDate);
             session.setAttribute(COMPLETE_DATE_ATTRIBUTE, completeDate);
@@ -278,7 +278,7 @@ public class AssignmentController extends BaseController {
             session.removeAttribute(START_DATE_ATTRIBUTE);
             session.removeAttribute(COMPLETE_DATE_ATTRIBUTE);
             session.removeAttribute(ADDITIONAL_PERSONS_ATTRIBUTE);
-            resp.sendRedirect(GET_ASSIGNMENTS);
+            resp.sendRedirect(req.getContextPath() + GET_ASSIGNMENTS);
         }
         else if(isAction(req, EDIT_ASSIGNMENT)) {
             Long id = Long.valueOf(req.getParameter(RoomAssignmentField.ID.getName()));
@@ -297,14 +297,15 @@ public class AssignmentController extends BaseController {
                 }
                 assignment.get().setFieldValue(fieldValueMap);
                 assignmentRepository.save(assignment.get());
-                resp.sendRedirect(GET_ASSIGNMENTS);
+                resp.sendRedirect(req.getContextPath() + GET_ASSIGNMENTS);
             }
         }
     }
 
-    private SelectionTableModel<Customer> createCustomerSelectionTableModel(List<Customer> customers) {
+    private SelectionTableModel<Customer> createCustomerSelectionTableModel(HttpServletRequest req,
+            List<Customer> customers) {
         return new SelectionTableModel<>("Выбор клиента", customers, "selectionCustomer",
-                SELECT_ROOM, SelectionType.RADIO) {
+                req.getContextPath() + SELECT_ROOM, SelectionType.RADIO) {
 
             @Override
             protected ColumnList createColumnList() {
@@ -332,8 +333,8 @@ public class AssignmentController extends BaseController {
         };
     }
 
-    private SelectionTableModel<Room> createRoomSelectionTableModel(List<Room> rooms) {
-        return new SelectionTableModel<>("Выбор комнаты", rooms, "selectionRoom", ADD_ASSIGNMENT,
+    private SelectionTableModel<Room> createRoomSelectionTableModel(HttpServletRequest req, List<Room> rooms) {
+        return new SelectionTableModel<>("Выбор комнаты", rooms, "selectionRoom", req.getContextPath() + ADD_ASSIGNMENT,
                 SelectionType.CHECKBOX) {
 
             @Override
@@ -361,7 +362,8 @@ public class AssignmentController extends BaseController {
         };
     }
 
-    private CrudTableModel<RoomAssignment> createAssignmentTableModel(List<RoomAssignment> assignments) {
+    private CrudTableModel<RoomAssignment> createAssignmentTableModel(HttpServletRequest req,
+            List<RoomAssignment> assignments) {
         CrudTableModel<RoomAssignment> crudTableModel = new CrudTableModel<RoomAssignment>("Таблица назначений", assignments) {
 
             @Override
@@ -392,8 +394,8 @@ public class AssignmentController extends BaseController {
                 return super.getValueAt(assignment, column);
             }
         };
-        crudTableModel.setCreateAction(SELECT_CUSTOMER);
-        crudTableModel.setEditAction(EDIT_ASSIGNMENT);
+        crudTableModel.setCreateAction(req.getContextPath() + SELECT_CUSTOMER);
+        crudTableModel.setEditAction(req.getContextPath() + EDIT_ASSIGNMENT);
         crudTableModel.setCanEdit(assignment -> assignment.getStatus() != RoomAssignmentStatus.COMPLETED &&
                 assignment.getStatus() != RoomAssignmentStatus.CANCELED);
         return crudTableModel;

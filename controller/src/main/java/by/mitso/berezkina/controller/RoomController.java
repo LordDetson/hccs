@@ -72,7 +72,7 @@ public class RoomController extends BaseController {
             InputFormModel inputFormModel = new InputFormModel(
                     "Форма типа комнаты",
                     "createRoomType",
-                    ADD_ROOM_TYPE,
+                    req.getContextPath() + ADD_ROOM_TYPE,
                     FieldUtil.getRoomTypeOrderedInputFields(),
                     "Создать");
             forwardStandardForm(req, resp, inputFormModel);
@@ -95,7 +95,7 @@ public class RoomController extends BaseController {
                 InputFormModel inputFormModel = new InputFormModel(
                         "Форма типа комнаты",
                         "editRoomType",
-                        EDIT_ROOM_TYPE + "?id=" + id,
+                        req.getContextPath() + EDIT_ROOM_TYPE + "?id=" + id,
                         inputFields,
                         "Обновить");
                 forwardStandardForm(req, resp, inputFormModel);
@@ -104,7 +104,7 @@ public class RoomController extends BaseController {
         else if(isRoomTypeDeletion(req)) {
             Integer id = Integer.valueOf(req.getParameter(RoomTypeField.ID.getName()));
             roomTypeRepository.deleteById(id);
-            resp.sendRedirect(GET_ROOM_TYPES);
+            resp.sendRedirect(req.getContextPath() + GET_ROOM_TYPES);
         }
         else if(isRoomCreation(req)) {
             Set<InputField> inputFields = FieldUtil.getMainRoomOrderedInputFields();
@@ -112,11 +112,11 @@ public class RoomController extends BaseController {
             InputFormModel inputFormModel = new InputFormModel(
                     "Форма комнаты",
                     "createRoom",
-                    ADD_ROOM,
+                    req.getContextPath() + ADD_ROOM,
                     inputFields,
                     "Создать");
             inputFormModel.getSubmitButtons()
-                    .add(new FormSubmitButton("Доп. параметры", ADD_ROOM + "?" + ADDITIONAL_ROOM_PARAMS_PARAMETER));
+                    .add(new FormSubmitButton("Доп. параметры", req.getContextPath() + ADD_ROOM + "?" + ADDITIONAL_ROOM_PARAMS_PARAMETER));
             forwardStandardForm(req, resp, inputFormModel);
         }
         else if(isRoomShow(req)) {
@@ -164,11 +164,11 @@ public class RoomController extends BaseController {
                     InputFormModel inputFormModel = new InputFormModel(
                             "Форма комнаты",
                             "editRoom",
-                            EDIT_ROOM + "?id=" + id,
+                            req.getContextPath() + EDIT_ROOM + "?id=" + id,
                             inputFields,
                             "Обновить");
                     inputFormModel.getSubmitButtons()
-                            .add(new FormSubmitButton("Доп. параметры", EDIT_ROOM + "?id=" + id + "&" + ADDITIONAL_ROOM_PARAMS_PARAMETER));
+                            .add(new FormSubmitButton("Доп. параметры", req.getContextPath() + EDIT_ROOM + "?id=" + id + "&" + ADDITIONAL_ROOM_PARAMS_PARAMETER));
                     forwardStandardForm(req, resp, inputFormModel);
                 }
             }
@@ -176,7 +176,7 @@ public class RoomController extends BaseController {
         else if(isRoomDeletion(req)) {
             Integer id = Integer.valueOf(req.getParameter(RoomField.ID.getName()));
             roomRepository.deleteById(id);
-            resp.sendRedirect(GET_ROOMS);
+            resp.sendRedirect(req.getContextPath() + GET_ROOMS);
         }
     }
 
@@ -204,7 +204,7 @@ public class RoomController extends BaseController {
             Map<Field, Object> fieldValueMap = FieldUtil.createFieldValueMap(RoomType.getAllFields(), req);
             RoomType roomType = roomTypeFactory.factor(fieldValueMap);
             roomTypeRepository.save(roomType);
-            resp.sendRedirect(GET_ROOM_TYPES);
+            resp.sendRedirect(req.getContextPath() + GET_ROOM_TYPES);
         }
         else if(isRoomTypeEditing(req)) {
             Integer id = Integer.valueOf(req.getParameter(RoomTypeField.ID.getName()));
@@ -213,7 +213,7 @@ public class RoomController extends BaseController {
                 RoomType roomType = roomTypeFactory.factor(fieldValueMap);
                 roomType.setId(id);
                 roomTypeRepository.save(roomType);
-                resp.sendRedirect(GET_ROOM_TYPES);
+                resp.sendRedirect(req.getContextPath() + GET_ROOM_TYPES);
             }
         }
         else if(isRoomCreation(req)) {
@@ -224,7 +224,7 @@ public class RoomController extends BaseController {
                 resp.sendRedirect(EDIT_ADDITIONAL_ROOM_PARAMS + "?id=" + room.getId());
             }
             else {
-                resp.sendRedirect(GET_ROOMS);
+                resp.sendRedirect(req.getContextPath() + GET_ROOMS);
             }
         }
         else if(isRoomEditing(req)) {
@@ -241,7 +241,7 @@ public class RoomController extends BaseController {
                     resp.sendRedirect(EDIT_ADDITIONAL_ROOM_PARAMS + "?id=" + id);
                 }
                 else {
-                    resp.sendRedirect(GET_ROOMS);
+                    resp.sendRedirect(req.getContextPath() + GET_ROOMS);
                 }
             }
         }
@@ -301,9 +301,9 @@ public class RoomController extends BaseController {
                 return list;
             }
         };
-        tableModel.setCreateAction(ADD_ROOM_TYPE);
-        tableModel.setEditAction(EDIT_ROOM_TYPE);
-        tableModel.setDeleteAction(DELETE_ROOM_TYPE);
+        tableModel.setCreateAction(req.getContextPath() + ADD_ROOM_TYPE);
+        tableModel.setEditAction(req.getContextPath() + EDIT_ROOM_TYPE);
+        tableModel.setDeleteAction(req.getContextPath() + DELETE_ROOM_TYPE);
         tableModel.setCanCreate(AccessChecker.isAdministrator(req));
         tableModel.setCanEdit(roomType -> AccessChecker.isAdministrator(req));
         tableModel.setCanDelete(roomType -> AccessChecker.isAdministrator(req));
@@ -341,9 +341,9 @@ public class RoomController extends BaseController {
                 return super.getValueAt(element, column);
             }
         };
-        crudTableModel.setCreateAction(ADD_ROOM);
-        crudTableModel.setEditAction(EDIT_ROOM);
-        crudTableModel.setDeleteAction(DELETE_ROOM);
+        crudTableModel.setCreateAction(req.getContextPath() + ADD_ROOM);
+        crudTableModel.setEditAction(req.getContextPath() + EDIT_ROOM);
+        crudTableModel.setDeleteAction(req.getContextPath() + DELETE_ROOM);
         crudTableModel.setCanCreate(AccessChecker.isAdministrator(req));
         crudTableModel.setCanEdit(roomType -> AccessChecker.isAdministrator(req));
         crudTableModel.setCanDelete(roomType -> AccessChecker.isAdministrator(req));

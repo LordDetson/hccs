@@ -72,10 +72,10 @@ public class CustomerController extends BaseController {
             InputFormModel inputFormModel = new InputFormModel(
                     "Форма клиента",
                     "createCustomer",
-                    ADD_CUSTOMER,
+                    req.getContextPath() + ADD_CUSTOMER,
                     inputFields,
                     "Создать");
-            FormSubmitButton placeInRoom = new FormSubmitButton("Поселить", ADD_CUSTOMER + "?" + PLACE_IN_ROOM_PARAMETER);
+            FormSubmitButton placeInRoom = new FormSubmitButton("Поселить", req.getContextPath() + ADD_CUSTOMER + "?" + PLACE_IN_ROOM_PARAMETER);
             inputFormModel.getSubmitButtons().add(placeInRoom);
             forwardStandardForm(req, resp, inputFormModel);
         }
@@ -103,7 +103,7 @@ public class CustomerController extends BaseController {
                 InputFormModel inputFormModel = new InputFormModel(
                         "Форма клиента",
                         "editCustomer",
-                        EDIT_CUSTOMER + "?id=" + id,
+                        req.getContextPath() + EDIT_CUSTOMER + "?id=" + id,
                         inputFields,
                         "Обновить");
                 forwardStandardForm(req, resp, inputFormModel);
@@ -112,7 +112,7 @@ public class CustomerController extends BaseController {
         else if(isAction(req, DELETE_CUSTOMER)) {
             Long id = Long.valueOf(req.getParameter(CustomerField.ID.getName()));
             customerRepository.deleteById(id);
-            resp.sendRedirect(GET_CUSTOMERS);
+            resp.sendRedirect(req.getContextPath() + GET_CUSTOMERS);
         }
     }
 
@@ -124,10 +124,10 @@ public class CustomerController extends BaseController {
             Customer saved = customerRepository.save(customer);
             if(req.getParameterMap().containsKey(PLACE_IN_ROOM_PARAMETER)) {
                 req.getSession().setAttribute(AssignmentController.SELECTED_CUSTOMER_ATTRIBUTE, saved);
-                resp.sendRedirect(AssignmentController.SELECT_ROOM);
+                resp.sendRedirect(req.getContextPath() + AssignmentController.SELECT_ROOM);
             }
             else {
-                resp.sendRedirect(GET_CUSTOMERS);
+                resp.sendRedirect(req.getContextPath() + GET_CUSTOMERS);
             }
         }
         else if(isAction(req, EDIT_CUSTOMER)) {
@@ -137,7 +137,7 @@ public class CustomerController extends BaseController {
                 Customer customer = CUSTOMER_FACTORY.factor(fieldValueMap);
                 customer.setId(id);
                 customerRepository.save(customer);
-                resp.sendRedirect(GET_CUSTOMERS);
+                resp.sendRedirect(req.getContextPath() + GET_CUSTOMERS);
             }
         }
     }
@@ -172,9 +172,9 @@ public class CustomerController extends BaseController {
                 return super.getValueAt(customer, column);
             }
         };
-        tableModel.setCreateAction(ADD_CUSTOMER);
-        tableModel.setEditAction(EDIT_CUSTOMER);
-        tableModel.setDeleteAction(DELETE_CUSTOMER);
+        tableModel.setCreateAction(req.getContextPath() + ADD_CUSTOMER);
+        tableModel.setEditAction(req.getContextPath() + EDIT_CUSTOMER);
+        tableModel.setDeleteAction(req.getContextPath() + DELETE_CUSTOMER);
         tableModel.setCanDelete(customer -> AccessChecker.isAdministrator(req));
         return tableModel;
     }

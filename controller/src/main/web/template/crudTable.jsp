@@ -3,14 +3,14 @@
 <%@ taglib uri="http://berezkina.mitso.by/custom-taglib" prefix="custom"%>
 <html>
 <head>
-    <jsp:include page="${pageContext.request.contextPath}/bootstrap-5.1.3-dist/bootstrap-css-includer.jsp"/>
+    <jsp:include page="/bootstrap-5.1.3-dist/bootstrap-css-includer.jsp"/>
     <title>${requestScope.crudTableModel.title}</title>
 </head>
 <body>
-<jsp:include page="${pageContext.request.contextPath}/header-includer.jsp"/>
+<jsp:include page="/header-includer.jsp"/>
 <div class="container">
     <custom:crud-table crudTableModel="${requestScope.crudTableModel}"/>
 </div>
-<jsp:include page="${pageContext.request.contextPath}/bootstrap-5.1.3-dist/bootstrap-css-includer.jsp"/>
+<jsp:include page="/bootstrap-5.1.3-dist/bootstrap-js-includer.jsp"/>
 </body>
 </html>

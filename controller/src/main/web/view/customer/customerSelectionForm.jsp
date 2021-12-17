@@ -3,11 +3,11 @@
 <%@ taglib uri="http://berezkina.mitso.by/custom-taglib" prefix="custom" %>
 <html>
 <head>
-    <jsp:include page="${pageContext.request.contextPath}/bootstrap-5.1.3-dist/bootstrap-css-includer.jsp"/>
+    <jsp:include page="/bootstrap-5.1.3-dist/bootstrap-css-includer.jsp"/>
     <title>${requestScope.selectionTableModel.title}</title>
 </head>
 <body>
-<jsp:include page="${pageContext.request.contextPath}/header-includer.jsp"/>
+<jsp:include page="/header-includer.jsp"/>
 <div class="container">
     <form name="customer-search" action="${pageContext.request.contextPath}/customer/search" method="post">
         <div class="input-group mb-3">
@@ -26,6 +26,6 @@
     </c:if>
     <custom:selection-table selectionTableModel="${requestScope.selectionTableModel}"/>
 </div>
-<jsp:include page="${pageContext.request.contextPath}/bootstrap-5.1.3-dist/bootstrap-css-includer.jsp"/>
+<jsp:include page="/bootstrap-5.1.3-dist/bootstrap-js-includer.jsp"/>
 </body>
 </html>
